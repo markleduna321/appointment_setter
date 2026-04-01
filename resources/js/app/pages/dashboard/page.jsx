@@ -1,0 +1,69 @@
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Head, usePage } from '@inertiajs/react';
+import Layout from '../layout';
+
+// Admin sections
+import HeaderSection from './_sections/header-section';
+import StatsSection from './_sections/stats-section';
+import QuickActionsSection from './_sections/quick-actions-section';
+import ChartsSection from './_sections/charts-section';
+import DashboardTableSection from './_sections/dashboard-table-section';
+import AnnouncementsSection from './_sections/announcements-section';
+
+// Patient sections
+import PatientHeaderSection from './_sections/patient-header-section';
+import PatientStatsSection from './_sections/patient-stats-section';
+import PatientQuickActionsSection from './_sections/patient-quick-actions-section';
+import PatientUpcomingSection from './_sections/patient-upcoming-section';
+
+import { fetchDashboardSummaryThunk } from './_redux/dashboard-thunk';
+
+export default function DashboardPage() {
+    const dispatch = useDispatch();
+    const { auth } = usePage().props;
+    const role = auth?.user?.role;
+    const isAdmin = role === 'admin' || role === 'super_admin';
+
+    useEffect(() => {
+        dispatch(fetchDashboardSummaryThunk());
+    }, [dispatch]);
+
+    return (
+        <Layout>
+            <Head title="Dashboard" />
+
+            {isAdmin ? (
+                <>
+                    <HeaderSection />
+                    <StatsSection />
+                    <QuickActionsSection />
+
+                    <div className="mb-6">
+                        <ChartsSection />
+                    </div>
+
+                    <div className="grid xl:grid-cols-3 gap-5">
+                        <div className="xl:col-span-2">
+                            <DashboardTableSection />
+                        </div>
+                        <AnnouncementsSection />
+                    </div>
+                </>
+            ) : (
+                <>
+                    <PatientHeaderSection />
+                    <PatientStatsSection />
+                    <PatientQuickActionsSection />
+
+                    <div className="grid xl:grid-cols-3 gap-5">
+                        <div className="xl:col-span-2">
+                            <PatientUpcomingSection />
+                        </div>
+                        <AnnouncementsSection />
+                    </div>
+                </>
+            )}
+        </Layout>
+    );
+}

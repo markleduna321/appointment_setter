@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { submitBookingThunk } from './book-now-thunk';
+import { submitBookingThunk, fetchBookingServicesThunk } from './book-now-thunk';
 
 const bookNowSlice = createSlice({
     name: 'bookNow',
@@ -12,6 +12,8 @@ const bookNowSlice = createSlice({
             time:         '',
             notes:        '',
         },
+        bookingServices: [],
+        bookingServicesLoading: false,
         submitted: false,
         submitting: false,
         error: null,
@@ -38,6 +40,10 @@ const bookNowSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(fetchBookingServicesThunk.pending,   (s) => { s.bookingServicesLoading = true; })
+            .addCase(fetchBookingServicesThunk.fulfilled, (s, a) => { s.bookingServicesLoading = false; s.bookingServices = a.payload; })
+            .addCase(fetchBookingServicesThunk.rejected,  (s) => { s.bookingServicesLoading = false; })
+
             .addCase(submitBookingThunk.pending,   (s) => { s.submitting = true; s.error = null; })
             .addCase(submitBookingThunk.fulfilled,  (s) => { s.submitting = false; s.submitted = true; })
             .addCase(submitBookingThunk.rejected,   (s, a) => { s.submitting = false; s.error = a.payload; });

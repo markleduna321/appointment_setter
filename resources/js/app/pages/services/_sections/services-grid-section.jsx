@@ -3,6 +3,7 @@ import { openModal } from '../_redux/service-slice';
 import { deleteServiceThunk } from '../_redux/service-thunk';
 import { usePage } from '@inertiajs/react';
 import { PencilIcon, TrashIcon, ClockIcon, TagIcon } from '@heroicons/react/24/outline';
+import { getServiceIcon } from '../../../utils/service-icons';
 
 const CATEGORY_COLORS = {
     'Consultation': 'bg-blue-100 text-blue-700',
@@ -14,25 +15,6 @@ const CATEGORY_COLORS = {
     'Therapy':      'bg-teal-100 text-teal-700',
     'Vaccination':  'bg-green-100 text-green-700',
 };
-
-const CARD_GRADIENTS = [
-    'from-purple-400 to-indigo-500',
-    'from-blue-400 to-cyan-500',
-    'from-teal-400 to-emerald-500',
-    'from-pink-400 to-rose-500',
-    'from-amber-400 to-orange-500',
-    'from-green-400 to-teal-500',
-];
-
-function cardGradient(name = '') {
-    let h = 0;
-    for (const c of name) h = (h * 31 + c.charCodeAt(0)) & 0xffffffff;
-    return CARD_GRADIENTS[Math.abs(h) % CARD_GRADIENTS.length];
-}
-
-function initials(name = '') {
-    return name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
-}
 
 function formatDuration(mins) {
     if (!mins) return '—';
@@ -50,7 +32,7 @@ function SkeletonCard() {
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 animate-pulse">
             <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gray-200" />
+                <div className="w-12 h-12 rounded-2xl bg-gray-200" />
                 <div className="flex-1 space-y-2">
                     <div className="h-4 bg-gray-200 rounded w-3/4" />
                     <div className="h-3 bg-gray-100 rounded w-1/2" />
@@ -66,6 +48,7 @@ function SkeletonCard() {
 
 function ServiceCard({ service, isAdmin }) {
     const dispatch = useDispatch();
+    const { emoji, bg } = getServiceIcon(service.category);
 
     const handleDelete = () => {
         if (confirm(`Delete service "${service.name}"?`)) {
@@ -76,15 +59,17 @@ function ServiceCard({ service, isAdmin }) {
     const catColor = CATEGORY_COLORS[service.category] ?? 'bg-gray-100 text-gray-600';
 
     return (
-        <div className={`bg-white rounded-2xl border shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-4 ${service.status === 'inactive' ? 'opacity-60 border-gray-200' : 'border-gray-100'}`}>
+        <div className={`bg-white rounded-2xl border shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 ${service.status === 'inactive' ? 'opacity-60 border-gray-200' : 'border-gray-100'}`}>
             {/* Header */}
             <div className="flex items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cardGradient(service.name)} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
-                    {initials(service.name)}
+                {/* Emoji icon */}
+                <div className={`w-12 h-12 rounded-2xl ${bg} flex items-center justify-center text-2xl flex-shrink-0`}>
+                    {emoji}
                 </div>
+
                 <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                        <p className="font-semibold text-gray-900 truncate">{service.name}</p>
+                        <p className="font-semibold text-gray-900 text-sm leading-snug">{service.name}</p>
                         {isAdmin && (
                             <div className="flex gap-1 flex-shrink-0">
                                 <button
@@ -104,32 +89,35 @@ function ServiceCard({ service, isAdmin }) {
                             </div>
                         )}
                     </div>
-                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${catColor}`}>
-                            {service.category}
-                        </span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${service.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
-                            {service.status === 'active' ? 'Active' : 'Inactive'}
-                        </span>
-                    </div>
+
+                    {/* Description */}
+                    {service.description && (
+                        <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">{service.description}</p>
+                    )}
+
+                    {/* Duration chip */}
+                    <span className="inline-block mt-2 text-[11px] font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full">
+                        {formatDuration(service.duration)}
+                    </span>
                 </div>
             </div>
 
-            {/* Description */}
-            {service.description && (
-                <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{service.description}</p>
-            )}
-
-            {/* Duration + Price */}
-            <div className="flex items-center justify-between pt-1 border-t border-gray-50">
-                <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                    <ClockIcon className="w-3.5 h-3.5" />
-                    {formatDuration(service.duration)}
+            {/* Footer: category badge + price (admin) */}
+            <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+                <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${catColor}`}>
+                        {service.category}
+                    </span>
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${service.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
+                        {service.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-sm font-bold text-gray-800">
-                    <TagIcon className="w-3.5 h-3.5 text-gray-400" />
-                    {formatPrice(service.price)}
-                </div>
+                {isAdmin && (
+                    <div className="flex items-center gap-1 text-sm font-bold text-gray-800">
+                        <TagIcon className="w-3.5 h-3.5 text-gray-400" />
+                        {formatPrice(service.price)}
+                    </div>
+                )}
             </div>
         </div>
     );

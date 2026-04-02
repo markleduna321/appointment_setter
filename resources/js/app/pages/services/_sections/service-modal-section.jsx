@@ -4,6 +4,7 @@ import { closeModal } from '../_redux/service-slice';
 import { createServiceThunk, updateServiceThunk } from '../_redux/service-thunk';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { CATEGORIES } from './filters-section';
+import { getServiceIcon } from '../../../utils/service-icons';
 
 const EMPTY_FORM = {
     name:        '',
@@ -91,20 +92,31 @@ export default function ServiceModalSection() {
                         />
                     </div>
 
-                    {/* Category */}
+                    {/* Category + icon preview */}
                     <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">
                             Category <span className="text-red-400">*</span>
                         </label>
-                        <select
-                            value={form.category}
-                            onChange={(e) => set('category', e.target.value)}
-                            required
-                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-400 transition bg-white"
-                        >
-                            <option value="">Select category…</option>
-                            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                        </select>
+                        <div className="flex items-center gap-3">
+                            {/* Live icon preview */}
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 transition-colors ${form.category ? getServiceIcon(form.category).bg : 'bg-gray-100'}`}>
+                                {form.category ? getServiceIcon(form.category).emoji : <span className="text-gray-300 text-base">?</span>}
+                            </div>
+                            <select
+                                value={form.category}
+                                onChange={(e) => set('category', e.target.value)}
+                                required
+                                className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-400 transition bg-white"
+                            >
+                                <option value="">Select category…</option>
+                                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                        {form.category && (
+                            <p className="text-xs text-gray-400 mt-1.5 ml-13">
+                                Icon auto-assigned from category
+                            </p>
+                        )}
                     </div>
 
                     {/* Duration + Price */}

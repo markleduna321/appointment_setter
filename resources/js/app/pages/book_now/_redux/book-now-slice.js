@@ -6,11 +6,12 @@ const bookNowSlice = createSlice({
     initialState: {
         step: 1,          // 1 = service, 2 = doctor, 3 = date/time, 4 = confirm
         booking: {
-            service:      '',
-            doctor_name:  '',
-            date:         '',
-            time:         '',
-            notes:        '',
+            service:          '',
+            service_category: '',
+            doctor_name:      '',
+            date:             '',
+            time:             '',
+            notes:            '',
         },
         bookingServices: [],
         bookingServicesLoading: false,
@@ -31,11 +32,18 @@ const bookNowSlice = createSlice({
             state.step = action.payload;
         },
         setBookingField(state, action) {
+            // When category changes, clear cached doctors so the step re-fetches
+            if ('service_category' in action.payload &&
+                action.payload.service_category !== state.booking.service_category) {
+                state.bookingDoctors = [];
+                state.booking.doctor_name = '';
+            }
             state.booking = { ...state.booking, ...action.payload };
         },
         resetBooking(state) {
             state.step = 1;
-            state.booking = { service: '', doctor_name: '', date: '', time: '', notes: '' };
+            state.booking = { service: '', service_category: '', doctor_name: '', date: '', time: '', notes: '' };
+            state.bookingDoctors = [];
             state.submitted = false;
             state.error = null;
         },

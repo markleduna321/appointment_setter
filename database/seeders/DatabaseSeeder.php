@@ -22,6 +22,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // super admin
-        $this->call(SuperAdminSeeder::class);
+        $this->call([
+            SuperAdminSeeder::class,
+            ServicesSeeder::class,
+            DoctorsSeeder::class,
+        ]);
     }
 }

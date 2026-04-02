@@ -56,10 +56,10 @@ export default function DoctorStepSection() {
     const { booking, bookingDoctors, bookingDoctorsLoading } = useSelector((s) => s.bookNow);
 
     useEffect(() => {
-        if (bookingDoctors.length === 0) {
-            dispatch(fetchBookingDoctorsThunk());
+        if (booking.service_category) {
+            dispatch(fetchBookingDoctorsThunk(booking.service_category));
         }
-    }, []);
+    }, [booking.service_category]);
 
     const select = (name) => {
         dispatch(setBookingField({ doctor_name: name }));
@@ -70,7 +70,12 @@ export default function DoctorStepSection() {
 
     return (
         <div>
-            <h2 className="text-base font-bold text-gray-700 mb-4">Choose a Doctor</h2>
+            <h2 className="text-base font-bold text-gray-700 mb-1">Choose a Doctor</h2>
+            {booking.service && (
+                <p className="text-xs text-gray-500 mb-4">
+                    Showing doctors for <span className="font-semibold text-blue-600">{booking.service}</span>
+                </p>
+            )}
 
             {bookingDoctorsLoading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -80,7 +85,7 @@ export default function DoctorStepSection() {
 
             {!bookingDoctorsLoading && bookingDoctors.length === 0 && (
                 <div className="text-center py-10 text-gray-400 text-sm">
-                    No available doctors at the moment.
+                    No available doctors for this service at the moment.
                 </div>
             )}
 

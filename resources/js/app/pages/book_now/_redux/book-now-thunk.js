@@ -16,9 +16,11 @@ export const fetchBookingServicesThunk = createAsyncThunk(
 
 export const fetchBookingDoctorsThunk = createAsyncThunk(
     'bookNow/fetchDoctors',
-    async (_, { rejectWithValue }) => {
+    async (specialty, { rejectWithValue }) => {
         try {
-            return await get_doctors_service({ status: 'available' });
+            const params = { status: 'available' };
+            if (specialty) params.specialty = specialty;
+            return await get_doctors_service(params);
         } catch (err) {
             return rejectWithValue(err.response?.data?.message ?? 'Failed to load doctors.');
         }

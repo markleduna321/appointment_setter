@@ -36,8 +36,8 @@ export default function ServiceStepSection() {
         }
     }, []);
 
-    const select = (name) => {
-        dispatch(setBookingField({ service: name }));
+    const select = (svc) => {
+        dispatch(setBookingField({ service: svc.name, service_category: svc.category }));
         dispatch(nextStep());
     };
 
@@ -65,7 +65,7 @@ export default function ServiceStepSection() {
                         return (
                             <button
                                 key={svc.id}
-                                onClick={() => select(svc.name)}
+                                onClick={() => select(svc)}
                                 className={`text-left flex items-start gap-4 p-4 rounded-2xl border-2 transition-all hover:shadow-md ${
                                     isSelected
                                         ? 'border-blue-500 bg-blue-50 shadow-sm'

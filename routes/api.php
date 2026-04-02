@@ -42,6 +42,12 @@ Route::middleware('web')->group(function () {
         // Reports
         Route::get('/reports/appointments-summary', [ReportController::class, 'appointmentsSummary']);
 
+        // Profile API (current authenticated user)
+        Route::get('/profile', [\App\Http\Controllers\Api\ProfileApiController::class, 'show']);
+        Route::patch('/profile', [\App\Http\Controllers\Api\ProfileApiController::class, 'update']);
+        Route::put('/profile/password', [\App\Http\Controllers\Api\ProfileApiController::class, 'updatePassword']);
+        Route::delete('/profile', [\App\Http\Controllers\Api\ProfileApiController::class, 'destroy']);
+
         // Services
         Route::get('/services',         [ServiceController::class, 'index']);
         Route::post('/services',        [ServiceController::class, 'store']);

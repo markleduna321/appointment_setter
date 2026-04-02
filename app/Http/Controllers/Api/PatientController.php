@@ -13,7 +13,7 @@ class PatientController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::where('role', 'patient')->orderBy('name');
+        $query = User::with('mobile')->where('role', 'patient')->orderBy('name');
 
         if ($request->filled('search')) {
             $search = '%' . $request->search . '%';
@@ -33,7 +33,7 @@ class PatientController extends Controller
      */
     public function show($id)
     {
-        $patient = User::where('role', 'patient')->find($id);
+        $patient = User::with('mobile')->where('role', 'patient')->find($id);
         if (! $patient) {
             return response()->json(['message' => 'Not found'], 404);
         }

@@ -25,6 +25,12 @@ class User extends Authenticatable
     ];
 
     /**
+     * Append computed attributes to model array/json.
+     * `phone` will be resolved from the related `user_mobiles` row.
+     */
+    protected $appends = ['phone'];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
@@ -55,5 +61,19 @@ class User extends Authenticatable
     public function appointments()
     {
         return $this->hasMany(\App\Models\Appointment::class, 'user_id');
+    }
+
+    /** The one mobile record for this user. */
+    public function mobile()
+    {
+        return $this->hasOne(\App\Models\UserMobile::class, 'user_id');
+    }
+
+    /**
+     * Provide a `phone` attribute that proxies to the related UserMobile.
+     */
+    public function getPhoneAttribute()
+    {
+        return $this->mobile?->mobile ?? null;
     }
 }

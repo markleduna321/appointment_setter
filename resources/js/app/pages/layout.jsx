@@ -58,7 +58,6 @@ const adminNavItems = [
             </svg>
         ),
     },
-    { label: 'Settings', href: '/settings', icon: <Cog6ToothIcon className="w-5 h-5" /> },
 ];
 
 export default function Layout({ children }) {
@@ -74,7 +73,8 @@ export default function Layout({ children }) {
     const roleBadge = isAdmin ? 'Admin' : (role === 'appointment_setter' ? 'Appointment Setter' : 'Patient');
     const roleBadgeColor = isAdmin ? 'bg-blue-500/20 text-blue-200' : (role === 'appointment_setter' ? 'bg-purple-500/20 text-purple-200' : 'bg-emerald-500/20 text-emerald-200');
 
-    const isActive = (href) => url === href || url.startsWith(href + '/');
+    const normalize = (u = '') => u.replace(/\/+$/, '');
+    const isActive = (href) => normalize(url) === normalize(href);
 
     return (
         <div className="flex h-screen bg-gray-100 overflow-hidden font-sans">
@@ -185,7 +185,7 @@ export default function Layout({ children }) {
                         />
                     </div>
 
-                    <div className="flex items-center gap-3 ml-auto relative">
+                    <div className="flex items-center gap-3 ml-auto">
                         {/* Notification Bell */}
                         <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -196,28 +196,30 @@ export default function Layout({ children }) {
                             </span>
                         </button>
 
-                        {/* User Info / Menu Trigger */}
-                        <button onClick={() => setUserMenuOpen((s) => !s)} className="flex items-center gap-2 cursor-pointer group focus:outline-none">
-                            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-600 text-white text-sm font-semibold select-none">
-                                {userInitial}
-                            </div>
-                            <div className="hidden sm:block leading-tight">
-                                <p className="text-sm font-semibold text-gray-800">{authUser?.name ?? 'User'}</p>
-                                <p className="text-xs text-gray-400">{authUser?.email ?? ''}</p>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
+                        {/* User Info + dropdown wrapper */}
+                        <div className="relative">
+                            <button onClick={() => setUserMenuOpen((s) => !s)} className="flex items-center gap-2 cursor-pointer group focus:outline-none">
+                                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-600 text-white text-sm font-semibold select-none">
+                                    {userInitial}
+                                </div>
+                                <div className="hidden sm:block leading-tight">
+                                    <p className="text-sm font-semibold text-gray-800">{authUser?.name ?? 'User'}</p>
+                                    <p className="text-xs text-gray-400">{authUser?.email ?? ''}</p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
 
-                        {/* User dropdown */}
-                        {userMenuOpen && (
-                            <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border py-1 z-50">
-                                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</Link>
-                                <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</Link>
-                                <Link href="/logout" method="post" as="button" className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</Link>
-                            </div>
-                        )}
+                            {/* User dropdown anchored to wrapper */}
+                            {userMenuOpen && (
+                                <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-lg shadow-lg border py-1 z-50 origin-top-right">
+                                    <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</Link>
+                                    <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</Link>
+                                    <Link href="/logout" method="post" as="button" className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</Link>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </header>
 

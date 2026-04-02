@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
+import NotificationBell from '../notifications/NotificationBell';
 import {
     CalendarDaysIcon,
     ClockIcon,
@@ -187,14 +188,7 @@ export default function Layout({ children }) {
 
                     <div className="flex items-center gap-3 ml-auto">
                         {/* Notification Bell */}
-                        <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                            </svg>
-                            <span className="absolute top-1 right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full">
-                                1
-                            </span>
-                        </button>
+                        <NotificationBell />
 
                         {/* User Info + dropdown wrapper */}
                         <div className="relative">
@@ -215,7 +209,6 @@ export default function Layout({ children }) {
                             {userMenuOpen && (
                                 <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-lg shadow-lg border py-1 z-50 origin-top-right">
                                     <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</Link>
-                                    <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</Link>
                                     <Link href="/logout" method="post" as="button" className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</Link>
                                 </div>
                             )}

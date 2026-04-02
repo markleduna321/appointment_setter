@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Services\NotificationService;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -116,6 +118,33 @@ class AppointmentController extends Controller
         $appointment->load('patient:id,name,email');
         $appointment->patient_name = $appointment->patient->name ?? '';
 
+        // Notify the patient a new appointment has been received
+        NotificationService::send(
+            $appointment->user_id,
+            'appointment_booked',
+            'Appointment Booked',
+            "Your appointment for {$appointment->service} with {$appointment->doctor_name} on " . $appointment->date->format('M d, Y') . ' has been received and is pending confirmation.',
+            $appointment->id
+        );
+
+        // Notify admins/staff when a patient creates an appointment
+        if ($user->role === 'patient') {
+            $adminRoles = ['super_admin', 'admin', 'appointment_setter'];
+            $admins = User::whereIn('role', $adminRoles)->get();
+            foreach ($admins as $admin) {
+                // skip notifying the patient themselves if roles overlap
+                if ($admin->id === $appointment->user_id) continue;
+
+                NotificationService::send(
+                    $admin->id,
+                    'appointment_new',
+                    'New Appointment Requested',
+                    "{$appointment->patient_name} requested {$appointment->service} with {$appointment->doctor_name} on " . $appointment->date->format('M d, Y') . '.',
+                    $appointment->id
+                );
+            }
+        }
+
         return response()->json(['data' => $appointment], 201);
     }
 
@@ -152,9 +181,15 @@ class AppointmentController extends Controller
             'status'      => 'sometimes|required|in:pending,confirmed,completed,cancelled',
         ]);
 
+        $oldStatus = $appt->status;
         $appt->fill($data);
         $appt->updated_by = $user->id;
         $appt->save();
+
+        // fire notification when status changes
+        if (isset($data['status']) && $data['status'] !== $oldStatus) {
+            NotificationService::appointmentStatusChanged($appt, $oldStatus);
+        }
 
         $appt->load('patient:id,name,email');
         $appt->patient_name = $appt->patient->name ?? '';
@@ -183,9 +218,12 @@ class AppointmentController extends Controller
             ], 422);
         }
 
+        $oldStatus        = $appt->status;
         $appt->status     = 'cancelled';
         $appt->updated_by = $user->id;
         $appt->save();
+
+        NotificationService::appointmentStatusChanged($appt, $oldStatus);
 
         return response()->json(['data' => $appt]);
     }

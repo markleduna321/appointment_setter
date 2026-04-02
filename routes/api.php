@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthApiController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\UserManagementController;
 use App\Http\Controllers\Api\PatientController;
@@ -47,6 +48,12 @@ Route::middleware('web')->group(function () {
         Route::patch('/profile', [\App\Http\Controllers\Api\ProfileApiController::class, 'update']);
         Route::put('/profile/password', [\App\Http\Controllers\Api\ProfileApiController::class, 'updatePassword']);
         Route::delete('/profile', [\App\Http\Controllers\Api\ProfileApiController::class, 'destroy']);
+
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
         // Services
         Route::get('/services',         [ServiceController::class, 'index']);

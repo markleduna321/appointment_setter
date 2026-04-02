@@ -7,6 +7,7 @@ import userManagementReducer from '../pages/user_management/_redux/user-manageme
 import doctorsReducer from '../pages/doctors/_redux/doctor-slice';
 import servicesReducer from '../pages/services/_redux/service-slice';
 import scheduleReducer from '../pages/schedule/_redux/schedule-slice';
+import patientsReducer from '../pages/patient/_redux/patient-slice';
 
 const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
         bookNow: bookNowReducer,
         userManagement: userManagementReducer,
         doctors: doctorsReducer,
+        patients: patientsReducer,
         services: servicesReducer,
         schedule: scheduleReducer,
     },

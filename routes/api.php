@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\UserManagementController;
+use App\Http\Controllers\Api\PatientController;
 use Illuminate\Support\Facades\Route;
 
 // Auth routes under web middleware so sessions and CSRF work for the SPA
@@ -32,6 +33,10 @@ Route::middleware('web')->group(function () {
         Route::get('/doctors/{id}',   [DoctorController::class, 'show']);
         Route::put('/doctors/{id}',   [DoctorController::class, 'update']);
         Route::delete('/doctors/{id}',[DoctorController::class, 'destroy']);
+
+        // Patients
+        Route::get('/patients',        [PatientController::class, 'index']);
+        Route::get('/patients/{id}',   [PatientController::class, 'show']);
 
         // Services
         Route::get('/services',         [ServiceController::class, 'index']);

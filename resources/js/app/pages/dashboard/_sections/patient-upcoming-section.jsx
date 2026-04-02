@@ -62,7 +62,11 @@ export default function PatientUpcomingSection() {
                     {list.map((appt) => {
                         const style = STATUS_STYLE[appt.status] ?? STATUS_STYLE.pending;
                         return (
-                            <div key={appt.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50/60 transition-colors">
+                            <Link
+                                key={appt.id}
+                                href={`/appointments/${appt.id}`}
+                                className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50/60 transition-colors"
+                            >
                                 {/* Date badge */}
                                 <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex flex-col items-center justify-center">
                                     <span className="text-[10px] font-bold text-blue-500 uppercase leading-none">
@@ -82,7 +86,7 @@ export default function PatientUpcomingSection() {
                                 <span className={`flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold capitalize ${style.badge}`}>
                                     {appt.status}
                                 </span>
-                            </div>
+                            </Link>
                         );
                     })}
                 </div>

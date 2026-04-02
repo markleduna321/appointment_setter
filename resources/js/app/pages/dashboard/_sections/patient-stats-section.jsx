@@ -21,14 +21,14 @@ const CARDS = [
 ];
 
 export default function PatientStatsSection() {
-    const { stats, loading } = useSelector((s) => s.dashboard);
+    const { stats, upcoming_appointments, loading } = useSelector((s) => s.dashboard);
 
-    // Map dashboard API stats to patient-facing keys, fall back to demo values
+    // Map dashboard API stats to patient-facing keys, prefer explicit fields then stats aggregates
     const values = {
-        upcoming:  stats?.upcoming_appointments ?? DEMO.upcoming,
-        pending:   stats?.pending_bookings      ?? DEMO.pending,
-        completed: stats?.completed_appointments ?? DEMO.completed,
-        total:     stats?.total_appointments     ?? DEMO.total,
+        upcoming:  upcoming_appointments?.length ?? stats?.upcoming ?? DEMO.upcoming,
+        pending:   stats?.pending_bookings ?? stats?.pending ?? DEMO.pending,
+        completed: stats?.completed ?? DEMO.completed,
+        total:     stats?.all_time ?? DEMO.total,
     };
 
     return (

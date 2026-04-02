@@ -1,6 +1,8 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { CalendarDaysIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { ClockIcon } from '@heroicons/react/24/solid';
+import { Link } from '@inertiajs/react';
+import { openModal } from '../../appointments/_redux/appointment-slice';
 
 const STATUS_STYLES = {
     confirmed: 'bg-green-100 text-green-700',
@@ -43,8 +45,78 @@ const DEMO_APPOINTMENTS = [
 ];
 
 export default function DashboardTableSection() {
+    const dispatch = useDispatch();
     const { upcoming_appointments, loading } = useSelector((state) => state.dashboard);
-    const rows = upcoming_appointments.length > 0 ? upcoming_appointments : DEMO_APPOINTMENTS;
+
+    function formatTime(t) {
+        if (!t) return '';
+        const [h, m] = t.split(':');
+        const hour = parseInt(h, 10);
+        return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'PM' : 'AM'}`;
+    }
+
+    function formatDate(d) {
+        if (!d) return '';
+        return new Date(d + 'T00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // Helpers to convert displayed demo values back to ISO for modal inputs
+    function parseDisplayDateToISO(d) {
+        if (!d) return '';
+        if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+        const parsed = new Date(d);
+        if (isNaN(parsed)) return '';
+        const yyyy = parsed.getFullYear();
+        const mm = String(parsed.getMonth() + 1).padStart(2, '0');
+        const dd = String(parsed.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function parseDisplayTimeTo24(t) {
+        if (!t) return '';
+        if (/^\d{1,2}:\d{2}$/.test(t)) return t.padStart(5, '0');
+        const m = t.match(/(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)?/);
+        if (!m) return '';
+        let hour = parseInt(m[1], 10);
+        const minute = m[2];
+        const ampm = (m[3] || '').toUpperCase();
+        if (ampm === 'PM' && hour !== 12) hour += 12;
+        if (ampm === 'AM' && hour === 12) hour = 0;
+        return String(hour).padStart(2, '0') + ':' + minute;
+    }
+
+    // Normalize API shape to the table's expected fields
+    const rows = (upcoming_appointments.length > 0 ? upcoming_appointments : DEMO_APPOINTMENTS).map((appt) => ({
+        id: appt.id,
+        doctor: appt.doctor || appt.doctor_name || appt.patient_name || '—',
+        specialty: appt.specialty || appt.service || '',
+        date: appt.date ? formatDate(appt.date) : appt.date,
+        time: appt.time ? formatTime(appt.time) : appt.time,
+        location: appt.location || appt.branch || 'Main Branch',
+        status: appt.status || 'pending',
+        avatar: appt.avatar || (appt.doctor || appt.doctor_name ? `https://ui-avatars.com/api/?name=${encodeURIComponent(appt.doctor || appt.doctor_name)}&background=3b82f6&color=fff&size=40` : null),
+    }));
+
+    const handleOpen = (id, row) => {
+        const original = upcoming_appointments.find((a) => String(a.id) === String(id));
+        if (original) {
+            dispatch(openModal(original));
+            return;
+        }
+
+        // Fallback for demo rows: craft a minimal appointment object
+        const sel = {
+            id: row.id,
+            patient_name: row.patient_name || '',
+            doctor_name: row.doctor || row.doctor_name || '',
+            service: row.service || row.specialty || '',
+            date: parseDisplayDateToISO(row.date),
+            time: parseDisplayTimeTo24(row.time),
+            status: row.status || 'pending',
+            notes: row.notes || '',
+        };
+        dispatch(openModal(sel));
+    };
 
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -59,9 +131,9 @@ export default function DashboardTableSection() {
                         </span>
                     )}
                 </div>
-                <a href="#" className="text-xs text-blue-600 font-semibold hover:underline">
+                <Link href="/appointments" className="text-xs text-blue-600 font-semibold hover:underline">
                     View all →
-                </a>
+                </Link>
             </div>
 
             {loading ? (
@@ -117,7 +189,7 @@ export default function DashboardTableSection() {
                                             </span>
                                         </td>
                                         <td className="px-5 py-3.5 text-right">
-                                            <button className="text-xs text-blue-600 font-semibold hover:underline">
+                                            <button type="button" onClick={() => handleOpen(appt.id, appt)} className="text-xs text-blue-600 font-semibold hover:underline">
                                                 Details
                                             </button>
                                         </td>
@@ -130,7 +202,7 @@ export default function DashboardTableSection() {
                     {/* Mobile cards */}
                     <div className="md:hidden divide-y divide-gray-50">
                         {rows.map((appt) => (
-                            <div key={appt.id} className="px-4 py-3 flex items-start gap-3">
+                            <div key={appt.id} role="button" tabIndex={0} onClick={() => handleOpen(appt.id, appt)} className="px-4 py-3 flex items-start gap-3 cursor-pointer">
                                 <img
                                     src={appt.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(appt.doctor)}&background=3b82f6&color=fff&size=40`}
                                     alt={appt.doctor}

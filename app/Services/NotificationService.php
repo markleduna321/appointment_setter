@@ -30,6 +30,11 @@ class NotificationService
      */
     public static function appointmentStatusChanged(Appointment $appt, string $oldStatus): void
     {
+        // Manual / phone-in appointments have no linked user account — nothing to notify.
+        if (is_null($appt->user_id)) {
+            return;
+        }
+
         $newStatus = $appt->status;
 
         // Send to the patient who owns the appointment

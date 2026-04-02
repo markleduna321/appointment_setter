@@ -20,12 +20,20 @@ class AppointmentController extends Controller
         $request->validate([
             'doctor_name' => 'required|string|max:255',
             'date'        => 'required|date_format:Y-m-d',
+            'exclude_id'  => 'sometimes|integer',
         ]);
 
-        $booked = Appointment::where('doctor_name', $request->doctor_name)
+        $query = Appointment::where('doctor_name', $request->doctor_name)
             ->whereDate('date', $request->date)
-            ->where('status', 'confirmed')
-            ->pluck('time')
+            ->where('status', 'confirmed');
+
+        // When editing an existing appointment, exclude it so its own slot
+        // doesn't appear as blocked.
+        if ($request->filled('exclude_id')) {
+            $query->where('id', '!=', (int) $request->exclude_id);
+        }
+
+        $booked = $query->pluck('time')
             ->map(fn ($t) => substr($t, 0, 5)) // normalise HH:MM:SS → HH:MM
             ->values();
 
@@ -74,9 +82,12 @@ class AppointmentController extends Controller
         $perPage     = (int) $request->get('per_page', 15);
         $appointments = $query->paginate($perPage);
 
-        // Append patient_name to each item so the frontend can use it directly
+        // Resolve patient_name: prefer the stored column (manual appointments),
+        // fall back to the linked user account name.
         $appointments->getCollection()->transform(function ($appt) {
-            $appt->patient_name = $appt->patient->name ?? '';
+            if (empty($appt->patient_name)) {
+                $appt->patient_name = $appt->patient->name ?? '';
+            }
             return $appt;
         });
 
@@ -91,48 +102,67 @@ class AppointmentController extends Controller
         $user = $request->user();
 
         $data = $request->validate([
-            'service'     => 'required|string|max:255',
-            'doctor_name' => 'required|string|max:255',
-            'date'        => 'required|date|after_or_equal:today',
-            'time'        => 'required|date_format:H:i',
-            'notes'       => 'nullable|string|max:1000',
-            // Staff can specify a patient; patients always book for themselves
-            'user_id'     => 'sometimes|integer|exists:users,id',
+            'patient_name' => 'sometimes|nullable|string|max:255',
+            'service'      => 'required|string|max:255',
+            'doctor_name'  => 'required|string|max:255',
+            'date'         => 'required|date|after_or_equal:today',
+            'time'         => 'required|date_format:H:i',
+            'notes'        => 'nullable|string|max:1000',
+            // Staff can optionally link to an existing user account
+            'user_id'      => 'sometimes|nullable|integer|exists:users,id',
         ]);
 
-        // Resolve who the appointment belongs to
-        $patientId = ($user->role !== 'patient' && isset($data['user_id']))
-            ? $data['user_id']
-            : $user->id;
+        // For patients: always book for themselves.
+        // For staff: use provided user_id if given, otherwise null (manual / phone-in).
+        $patientId = null;
+        if ($user->role === 'patient') {
+            $patientId = $user->id;
+        } elseif (!empty($data['user_id'])) {
+            $patientId = $data['user_id'];
+        }
+
+        // Resolve the display name
+        $patientName = null;
+        if (!empty($data['patient_name'])) {
+            $patientName = $data['patient_name'];
+        } elseif ($patientId) {
+            $patientName = User::find($patientId)?->name;
+        }
 
         $appointment = Appointment::create([
-            'user_id'     => $patientId,
-            'service'     => $data['service'],
-            'doctor_name' => $data['doctor_name'],
-            'date'        => $data['date'],
-            'time'        => $data['time'],
-            'notes'       => $data['notes'] ?? null,
-            'status'      => 'pending',
+            'user_id'      => $patientId,
+            'patient_name' => $patientName,
+            'service'      => $data['service'],
+            'doctor_name'  => $data['doctor_name'],
+            'date'         => $data['date'],
+            'time'         => $data['time'],
+            'notes'        => $data['notes'] ?? null,
+            'status'       => 'pending',
         ]);
 
         $appointment->load('patient:id,name,email');
-        $appointment->patient_name = $appointment->patient->name ?? '';
+        // Ensure patient_name is always populated
+        if (empty($appointment->patient_name)) {
+            $appointment->patient_name = $appointment->patient->name ?? '';
+            $appointment->saveQuietly();
+        }
 
-        // Notify the patient a new appointment has been received
-        NotificationService::send(
-            $appointment->user_id,
-            'appointment_booked',
-            'Appointment Booked',
-            "Your appointment for {$appointment->service} with {$appointment->doctor_name} on " . $appointment->date->format('M d, Y') . ' has been received and is pending confirmation.',
-            $appointment->id
-        );
+        // Notify the linked patient account (if any)
+        if ($appointment->user_id) {
+            NotificationService::send(
+                $appointment->user_id,
+                'appointment_booked',
+                'Appointment Booked',
+                "Your appointment for {$appointment->service} with {$appointment->doctor_name} on " . $appointment->date->format('M d, Y') . ' has been received and is pending confirmation.',
+                $appointment->id
+            );
+        }
 
-        // Notify admins/staff when a patient creates an appointment
+        // Notify admins/staff when a patient self-books
         if ($user->role === 'patient') {
             $adminRoles = ['super_admin', 'admin', 'appointment_setter'];
             $admins = User::whereIn('role', $adminRoles)->get();
             foreach ($admins as $admin) {
-                // skip notifying the patient themselves if roles overlap
                 if ($admin->id === $appointment->user_id) continue;
 
                 NotificationService::send(
@@ -156,7 +186,9 @@ class AppointmentController extends Controller
         $appt = Appointment::with('patient:id,name,email')->findOrFail($id);
         $this->authorizeAccess($request->user(), $appt);
 
-        $appt->patient_name = $appt->patient->name ?? '';
+        if (empty($appt->patient_name)) {
+            $appt->patient_name = $appt->patient->name ?? '';
+        }
         return response()->json(['data' => $appt]);
     }
 
@@ -173,12 +205,13 @@ class AppointmentController extends Controller
         $appt = Appointment::findOrFail($id);
 
         $data = $request->validate([
-            'service'     => 'sometimes|required|string|max:255',
-            'doctor_name' => 'sometimes|required|string|max:255',
-            'date'        => 'sometimes|required|date',
-            'time'        => 'sometimes|required|date_format:H:i',
-            'notes'       => 'nullable|string|max:1000',
-            'status'      => 'sometimes|required|in:pending,confirmed,completed,cancelled',
+            'patient_name' => 'sometimes|nullable|string|max:255',
+            'service'      => 'sometimes|required|string|max:255',
+            'doctor_name'  => 'sometimes|required|string|max:255',
+            'date'         => 'sometimes|required|date',
+            'time'         => 'sometimes|required|date_format:H:i',
+            'notes'        => 'nullable|string|max:1000',
+            'status'       => 'sometimes|required|in:pending,confirmed,completed,cancelled',
         ]);
 
         $oldStatus = $appt->status;
@@ -192,7 +225,9 @@ class AppointmentController extends Controller
         }
 
         $appt->load('patient:id,name,email');
-        $appt->patient_name = $appt->patient->name ?? '';
+        if (empty($appt->patient_name)) {
+            $appt->patient_name = $appt->patient->name ?? '';
+        }
 
         return response()->json(['data' => $appt]);
     }

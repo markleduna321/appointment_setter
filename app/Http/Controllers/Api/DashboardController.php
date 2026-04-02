@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -58,24 +59,29 @@ class DashboardController extends Controller
             $days[] = $day->format('D');
             $weekCounts[] = (clone $base)->whereDate('date', $day->toDateString())->count();
         }
+        
+            // --- Specialty distribution ---
+            $specialtyCounts = DB::table('appointments')
+                ->leftJoin('doctors', 'appointments.doctor_name', '=', 'doctors.name')
+                ->select(DB::raw("COALESCE(doctors.specialty, 'Other') as specialty"), DB::raw('count(appointments.id) as count'))
+                ->groupBy('specialty')
+                ->orderByDesc('count')
+                ->get()
+                ->map(fn ($r) => ['label' => $r->specialty, 'count' => (int) $r->count]);
 
-        // Admin-specific aggregates
-        $stats = $isPatient
-            ? [
-                'upcoming'  => $pending + $confirmed,
-                'pending'   => $pending,
-                'completed' => $completed,
-                'all_time'  => (clone $base)->count(),
-            ]
-            : [
-                'todays_appointments' => $todaysTotal,
-                'pending_bookings'    => $pending,
-                'available_doctors'   => 0, // extend when doctors table exists
-                'new_notifications'   => 0,
-                'confirmed'           => $confirmed,
-                'completed'           => $completed,
-                'cancelled'           => $cancelled,
-            ];
+        // Unified stats structure (frontend expects these keys).
+        $stats = [
+            'todays_appointments' => $todaysTotal,
+            'pending_bookings'    => $pending,
+            'available_doctors'   => 0, // extend when doctors table exists
+            'new_notifications'   => 0,
+            'confirmed'           => $confirmed,
+            'completed'           => $completed,
+            'cancelled'           => $cancelled,
+            // Additional aggregates for consumers that need them
+            'upcoming'            => $pending + $confirmed,
+            'all_time'            => (clone $base)->count(),
+        ];
 
         return response()->json([
             'stats'                 => $stats,
@@ -92,6 +98,7 @@ class DashboardController extends Controller
             'quick_stats' => [
                 'appointments_this_week' => $weekCounts,
                 'days'                   => $days,
+                    'specialties'            => $specialtyCounts,
             ],
             'user' => [
                 'name'     => $user->name,

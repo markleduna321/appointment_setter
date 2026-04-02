@@ -1,27 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../_redux/appointment-slice';
 import { createAppointmentThunk, updateAppointmentThunk } from '../_redux/appointment-thunk';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-
-const DOCTORS = [
-    'Dr. Juan Dela Cruz',
-    'Dr. Ana Garcia',
-    'Dr. Jose Ramos',
-    'Dr. Maria Lim',
-    'Dr. Roberto Santos',
-];
-
-const SERVICES = [
-    'General Consultation',
-    'Dental Check-up',
-    'Eye Examination',
-    'Cardiology',
-    'Pediatrics',
-    'Dermatology',
-    'Orthopedics',
-    'OB-GYN',
-];
+import axios from 'axios';
 
 const EMPTY_FORM = {
     patient_name: '',
@@ -42,6 +24,12 @@ export default function AppointmentModalSection() {
 
     const [form, setForm]         = useState(EMPTY_FORM);
     const [formErrors, setFormErrors] = useState({});
+    const [services, setServices] = useState([]);
+    const [servicesLoading, setServicesLoading] = useState(false);
+    const [doctors, setDoctors] = useState([]);
+    const [doctorsLoading, setDoctorsLoading] = useState(false);
+    const [bookedSlots, setBookedSlots] = useState([]);
+    const [slotsLoading, setSlotsLoading] = useState(false);
     const isEditing               = !!selectedAppointment;
 
     useEffect(() => {
@@ -51,7 +39,8 @@ export default function AppointmentModalSection() {
                 doctor_name:  selectedAppointment.doctor_name  ?? '',
                 service:      selectedAppointment.service      ?? '',
                 date:         selectedAppointment.date         ?? '',
-                time:         selectedAppointment.time         ?? '',
+                // normalise HH:MM:SS (DB) → HH:MM
+                time:         (selectedAppointment.time ?? '').slice(0, 5),
                 status:       selectedAppointment.status       ?? 'pending',
                 notes:        selectedAppointment.notes        ?? '',
             });
@@ -60,6 +49,124 @@ export default function AppointmentModalSection() {
         }
         setFormErrors({});
     }, [selectedAppointment, modalOpen]);
+
+    // Fetch services when modal opens
+    useEffect(() => {
+        if (!modalOpen) return;
+        let mounted = true;
+        (async () => {
+            setServicesLoading(true);
+            try {
+                const res = await axios.get('/api/services', { params: { status: 'active' } });
+                const list = Array.isArray(res.data) ? res.data : (res.data.data ?? []);
+                if (mounted) setServices(list);
+            } catch (e) {
+                if (mounted) setServices([]);
+            } finally { if (mounted) setServicesLoading(false); }
+        })();
+        return () => { mounted = false; };
+    }, [modalOpen]);
+
+    // Helper: generate time slots from schedule window
+    function generateSlots(start, end) {
+        const DEFAULT_SLOTS = [
+            '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
+            '11:00', '11:30', '13:00', '13:30', '14:00', '14:30',
+            '15:00', '15:30', '16:00', '16:30',
+        ];
+        if (!start || !end) return DEFAULT_SLOTS;
+        const [sh, sm] = start.split(':').map(Number);
+        const [eh, em] = end.split(':').map(Number);
+        let cur = sh * 60 + sm;
+        const endMin = eh * 60 + em;
+        const slots = [];
+        while (cur < endMin) {
+            const h = Math.floor(cur / 60);
+            const m = cur % 60;
+            if (h !== 12) slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+            cur += 30;
+        }
+        return slots;
+    }
+
+    function formatTime(t) {
+        if (!t) return '';
+        const [h, m] = t.split(':');
+        const hour = parseInt(h, 10);
+        return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'PM' : 'AM'}`;
+    }
+
+    // Fetch doctors: either all available or filtered by service category
+    const fetchDoctors = useCallback(async (category = '') => {
+        setDoctorsLoading(true);
+        try {
+            const params = { status: 'available' };
+            if (category) params.specialty = category;
+            const res = await axios.get('/api/doctors', { params });
+            const list = res.data?.data ?? res.data ?? [];
+            setDoctors(list);
+        } catch (e) {
+            setDoctors([]);
+        } finally { setDoctorsLoading(false); }
+    }, []);
+
+    // When the selected service changes, fetch doctors for that category
+    useEffect(() => {
+        if (!modalOpen) return;
+        const svc = services.find((s) => s.name === form.service);
+        const category = svc?.category ?? '';
+        fetchDoctors(category);
+    }, [form.service, services, modalOpen, fetchDoctors]);
+
+    // Fetch booked slots when doctor + date selected
+    useEffect(() => {
+        let mounted = true;
+        const fetchBooked = async (doctorName, date) => {
+            setSlotsLoading(true);
+            try {
+                const params = { doctor_name: doctorName, date };
+                // Exclude this appointment's own slot so it is not greyed out during edits
+                if (isEditing && selectedAppointment?.id) {
+                    params.exclude_id = selectedAppointment.id;
+                }
+                const res = await axios.get('/api/availability', { params });
+                if (mounted) setBookedSlots(res.data?.booked ?? []);
+            } catch {
+                if (mounted) setBookedSlots([]);
+            } finally { if (mounted) setSlotsLoading(false); }
+        };
+        if (form.doctor_name && form.date) fetchBooked(form.doctor_name, form.date);
+        else setBookedSlots([]);
+        return () => { mounted = false; };
+    }, [form.doctor_name, form.date]);
+
+    // Derived state
+    const selectedDoctor = useMemo(
+        () => doctors.find((d) => d.name === form.doctor_name) ?? null,
+        [doctors, form.doctor_name],
+    );
+
+    const allSlots = useMemo(
+        () => generateSlots(selectedDoctor?.schedule_start, selectedDoctor?.schedule_end),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [selectedDoctor],
+    );
+
+    const isSlotPast = (slot) => {
+        if (!form.date) return false;
+        const today = new Date().toISOString().split('T')[0];
+        if (form.date !== today) return false;
+        const now   = new Date();
+        const [h, m] = slot.split(':').map(Number);
+        return h * 60 + m <= now.getHours() * 60 + now.getMinutes();
+    };
+
+    const doctorWorksOnDay = useMemo(() => {
+        if (!selectedDoctor?.schedule_days || !form.date) return true;
+        // schedule_days stores short names: Mon, Tue, Wed, Thu, Fri, Sat, Sun
+        const dayShort = new Date(form.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short' });
+        return selectedDoctor.schedule_days.includes(dayShort);
+    }, [selectedDoctor, form.date]);
 
     const field = (key, value) => setForm((f) => ({ ...f, [key]: value }));
 
@@ -135,72 +242,144 @@ export default function AppointmentModalSection() {
                         )}
                     </div>
 
-                    {/* Doctor */}
-                    <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">
-                            Doctor <span className="text-red-500">*</span>
-                        </label>
-                        <select
-                            value={form.doctor_name}
-                            onChange={(e) => field('doctor_name', e.target.value)}
-                            className={INPUT_CLASS}
-                        >
-                            <option value="">Select doctor</option>
-                            {DOCTORS.map((d) => <option key={d} value={d}>{d}</option>)}
-                        </select>
-                        {formErrors.doctor_name && (
-                            <p className="text-xs text-red-500 mt-0.5">{formErrors.doctor_name}</p>
-                        )}
-                    </div>
-
-                    {/* Service */}
+                    {/* Service — pick first so doctors are filtered by category */}
                     <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">
                             Service <span className="text-red-500">*</span>
                         </label>
                         <select
                             value={form.service}
-                            onChange={(e) => field('service', e.target.value)}
+                            onChange={(e) => {
+                                field('service', e.target.value);
+                                // Reset dependent fields only when actually changing service
+                                if (!isEditing) { field('doctor_name', ''); field('time', ''); }
+                            }}
+                            disabled={servicesLoading}
                             className={INPUT_CLASS}
                         >
-                            <option value="">Select service</option>
-                            {SERVICES.map((s) => <option key={s} value={s}>{s}</option>)}
+                            <option value="">{servicesLoading ? 'Loading…' : 'Select service'}</option>
+                            {services.map((s) => (
+                                <option key={s.id ?? s.name} value={s.name}>{s.name}</option>
+                            ))}
                         </select>
                         {formErrors.service && (
                             <p className="text-xs text-red-500 mt-0.5">{formErrors.service}</p>
                         )}
                     </div>
 
-                    {/* Date & Time */}
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-600 mb-1">
-                                Date <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="date"
-                                value={form.date}
-                                onChange={(e) => field('date', e.target.value)}
-                                className={INPUT_CLASS}
-                            />
-                            {formErrors.date && (
-                                <p className="text-xs text-red-500 mt-0.5">{formErrors.date}</p>
-                            )}
-                        </div>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-600 mb-1">
-                                Time <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="time"
-                                value={form.time}
-                                onChange={(e) => field('time', e.target.value)}
-                                className={INPUT_CLASS}
-                            />
-                            {formErrors.time && (
-                                <p className="text-xs text-red-500 mt-0.5">{formErrors.time}</p>
-                            )}
-                        </div>
+                    {/* Doctor — filtered by selected service category */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">
+                            Doctor <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            value={form.doctor_name}
+                            onChange={(e) => {
+                                field('doctor_name', e.target.value);
+                                if (!isEditing) field('time', '');
+                            }}
+                            disabled={doctorsLoading}
+                            className={INPUT_CLASS}
+                        >
+                            <option value="">
+                                {doctorsLoading
+                                    ? 'Loading…'
+                                    : doctors.length === 0 && form.service
+                                    ? 'No available doctors'
+                                    : 'Select doctor'}
+                            </option>
+                            {doctors.map((d) => (
+                                <option key={d.id ?? d.name} value={d.name}>{d.name}</option>
+                            ))}
+                        </select>
+                        {formErrors.doctor_name && (
+                            <p className="text-xs text-red-500 mt-0.5">{formErrors.doctor_name}</p>
+                        )}
+                    </div>
+
+                    {/* Date */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">
+                            Date <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="date"
+                            value={form.date}
+                            min={new Date().toISOString().split('T')[0]}
+                            onChange={(e) => {
+                                field('date', e.target.value);
+                                if (!isEditing) field('time', '');
+                            }}
+                            className={INPUT_CLASS}
+                        />
+                        {formErrors.date && (
+                            <p className="text-xs text-red-500 mt-0.5">{formErrors.date}</p>
+                        )}
+                    </div>
+
+                    {/* Time slot picker */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">
+                            Time Slot <span className="text-red-500">*</span>
+                        </label>
+
+                        {!form.doctor_name || !form.date ? (
+                            isEditing && form.time ? (
+                                <p className="text-xs text-blue-600 py-2 font-medium">
+                                    Current time: {formatTime(form.time)} &mdash; fill doctor &amp; date to change it.
+                                </p>
+                            ) : (
+                                <p className="text-xs text-gray-400 italic py-2">
+                                    Select a doctor and date to see available slots.
+                                </p>
+                            )
+                        ) : !doctorWorksOnDay ? (
+                            <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                                This doctor does not work on the selected day.
+                            </p>
+                        ) : slotsLoading ? (
+                            <div className="flex items-center gap-2 py-2 text-xs text-gray-400">
+                                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                </svg>
+                                Checking availability…
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-4 gap-1.5">
+                                {allSlots.map((slot) => {
+                                    const booked = bookedSlots.includes(slot);
+                                    const past   = isSlotPast(slot);
+                                    const disabled = booked || past;
+                                    const selected = form.time === slot;
+                                    return (
+                                        <button
+                                            key={slot}
+                                            type="button"
+                                            disabled={disabled}
+                                            onClick={() => !disabled && field('time', slot)}
+                                            className={[
+                                                'px-1 py-1.5 text-xs font-medium rounded-lg border transition-colors',
+                                                selected
+                                                    ? 'bg-blue-600 text-white border-blue-600'
+                                                    : disabled
+                                                    ? 'bg-gray-100 text-gray-300 border-gray-100 cursor-not-allowed line-through'
+                                                    : 'bg-white text-gray-700 border-gray-200 hover:border-blue-400 hover:text-blue-600',
+                                            ].join(' ')}
+                                        >
+                                            {formatTime(slot)}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {formErrors.time && (
+                            <p className="text-xs text-red-500 mt-1">{formErrors.time}</p>
+                        )}
+                        {form.time && (
+                            <p className="text-xs text-blue-600 mt-1 font-medium">Selected: {formatTime(form.time)}</p>
+                        )}
                     </div>
 
                     {/* Status (edit only) */}

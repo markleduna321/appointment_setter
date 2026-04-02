@@ -7,13 +7,21 @@ export default function ChartsSection() {
     const max = Math.max(...appointments_this_week, 1);
     const total = appointments_this_week.reduce((a, b) => a + b, 0);
 
-    // Specialty distribution (demo until real data arrives)
-    const specialties = [
-        { label: 'General',     value: 40, color: 'bg-blue-500' },
-        { label: 'Cardiology',  value: 25, color: 'bg-rose-400' },
-        { label: 'Dental',      value: 20, color: 'bg-cyan-400' },
-        { label: 'Mental Health', value: 15, color: 'bg-violet-400' },
-    ];
+    // Specialty distribution: compute percentages from quick_stats.specialties when available
+    const RAW_SPECIALTIES = quick_stats?.specialties || [];
+    const COLOR_PALETTE = ['bg-blue-500', 'bg-rose-400', 'bg-cyan-400', 'bg-violet-400', 'bg-emerald-400', 'bg-yellow-400'];
+
+    let specialties;
+    if (RAW_SPECIALTIES.length > 0) {
+        const totalCount = RAW_SPECIALTIES.reduce((s, r) => s + (r.count || 0), 0) || 1;
+        specialties = RAW_SPECIALTIES.map((r, i) => ({
+            label: r.label,
+            value: Math.round(((r.count || 0) / totalCount) * 100),
+            color: COLOR_PALETTE[i % COLOR_PALETTE.length],
+        }));
+    } else {
+        specialties = [];
+    }
 
     return (
         <div className="grid sm:grid-cols-2 gap-5">
@@ -76,30 +84,42 @@ export default function ChartsSection() {
                 </div>
 
                 <div className="space-y-3">
-                    {specialties.map((s) => (
-                        <div key={s.label}>
-                            <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-medium text-gray-600">{s.label}</span>
-                                <span className="text-xs text-gray-400">{s.value}%</span>
-                            </div>
-                            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div
-                                    className={`h-full ${s.color} rounded-full transition-all duration-700`}
-                                    style={{ width: `${s.value}%` }}
-                                />
-                            </div>
+                    {loading ? (
+                        <div className="h-32 flex items-center justify-center">
+                            <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                         </div>
-                    ))}
+                    ) : specialties.length === 0 ? (
+                        <div className="h-24 flex items-center justify-center text-sm text-gray-400">
+                            No specialty data
+                        </div>
+                    ) : (
+                        specialties.map((s) => (
+                            <div key={s.label}>
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs font-medium text-gray-600">{s.label}</span>
+                                    <span className="text-xs text-gray-400">{s.value}%</span>
+                                </div>
+                                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div
+                                        className={`h-full ${s.color} rounded-full transition-all duration-700`}
+                                        style={{ width: `${s.value}%` }}
+                                    />
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
 
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                    {specialties.map((s) => (
-                        <div key={s.label} className="flex items-center gap-1.5">
-                            <span className={`w-2 h-2 rounded-full ${s.color}`} />
-                            <span className="text-[11px] text-gray-500">{s.label}</span>
-                        </div>
-                    ))}
-                </div>
+                {specialties.length > 0 && (
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                        {specialties.map((s) => (
+                            <div key={s.label} className="flex items-center gap-1.5">
+                                <span className={`w-2 h-2 rounded-full ${s.color}`} />
+                                <span className="text-[11px] text-gray-500">{s.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -16,6 +16,7 @@ import PatientHeaderSection from './_sections/patient-header-section';
 import PatientStatsSection from './_sections/patient-stats-section';
 import PatientQuickActionsSection from './_sections/patient-quick-actions-section';
 import PatientUpcomingSection from './_sections/patient-upcoming-section';
+import AppointmentModalSection from '../appointments/_sections/appointment-modal-section';
 
 import { fetchDashboardSummaryThunk } from './_redux/dashboard-thunk';
 
@@ -37,7 +38,7 @@ export default function DashboardPage() {
                 <>
                     <HeaderSection />
                     <StatsSection />
-                    <QuickActionsSection />
+                    
 
                     <div className="mb-6">
                         <ChartsSection />
@@ -64,6 +65,7 @@ export default function DashboardPage() {
                     </div>
                 </>
             )}
+            <AppointmentModalSection />
         </Layout>
     );
 }

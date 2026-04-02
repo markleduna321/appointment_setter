@@ -17,6 +17,7 @@ const bookNowSlice = createSlice({
         bookingServicesLoading: false,
         bookingDoctors: [],
         bookingDoctorsLoading: false,
+        selectedDoctor: null,
         submitted: false,
         submitting: false,
         error: null,
@@ -40,10 +41,14 @@ const bookNowSlice = createSlice({
             }
             state.booking = { ...state.booking, ...action.payload };
         },
+        setSelectedDoctor(state, action) {
+            state.selectedDoctor = action.payload;
+        },
         resetBooking(state) {
             state.step = 1;
             state.booking = { service: '', service_category: '', doctor_name: '', date: '', time: '', notes: '' };
             state.bookingDoctors = [];
+            state.selectedDoctor = null;
             state.submitted = false;
             state.error = null;
         },
@@ -64,5 +69,5 @@ const bookNowSlice = createSlice({
     },
 });
 
-export const { nextStep, prevStep, goToStep, setBookingField, resetBooking } = bookNowSlice.actions;
+export const { nextStep, prevStep, goToStep, setBookingField, setSelectedDoctor, resetBooking } = bookNowSlice.actions;
 export default bookNowSlice.reducer;

@@ -17,7 +17,7 @@ Route::middleware('web')->group(function () {
     // Dashboard
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard/summary', [DashboardController::class, 'summary']);
-
+        Route::get('/availability',                [AppointmentController::class, 'availability']);
         // Appointments
         Route::get('/appointments',              [AppointmentController::class, 'index']);
         Route::post('/appointments',             [AppointmentController::class, 'store']);

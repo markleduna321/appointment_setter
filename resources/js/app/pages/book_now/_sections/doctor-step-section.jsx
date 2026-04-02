@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setBookingField, nextStep, prevStep } from '../_redux/book-now-slice';
+import { setBookingField, setSelectedDoctor, nextStep, prevStep } from '../_redux/book-now-slice';
 import { fetchBookingDoctorsThunk } from '../_redux/book-now-thunk';
 
 const AVATAR_GRADIENTS = [
@@ -38,6 +38,26 @@ const STATUS_LABELS = {
     on_leave:    'On Leave',
 };
 
+function formatHour(t) {
+    if (!t) return '';
+    const [h, m] = t.split(':');
+    const hour = parseInt(h, 10);
+    return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'PM' : 'AM'}`;
+}
+
+function ScheduleBadge({ doc }) {
+    const days  = doc.schedule_days ?? [];
+    const start = doc.schedule_start;
+    const end   = doc.schedule_end;
+    if (!days.length && !start) return null;
+    return (
+        <div className="mt-1.5 text-[10px] text-gray-400 leading-snug">
+            {days.length > 0 && <span>{days.join(' · ')}</span>}
+            {start && end && <span className="ml-1">· {formatHour(start)}–{formatHour(end)}</span>}
+        </div>
+    );
+}
+
 function SkeletonCard() {
     return (
         <div className="border-2 border-gray-100 rounded-2xl p-4 animate-pulse flex items-center gap-4">
@@ -61,8 +81,9 @@ export default function DoctorStepSection() {
         }
     }, [booking.service_category]);
 
-    const select = (name) => {
-        dispatch(setBookingField({ doctor_name: name }));
+    const select = (doc) => {
+        dispatch(setSelectedDoctor(doc));
+        dispatch(setBookingField({ doctor_name: doc.name }));
         dispatch(nextStep());
     };
 
@@ -98,7 +119,7 @@ export default function DoctorStepSection() {
                             <button
                                 key={doc.id}
                                 disabled={!available}
-                                onClick={() => available && select(doc.name)}
+                                onClick={() => available && select(doc)}
                                 className={`text-left flex items-center gap-4 p-4 rounded-2xl border-2 transition-all
                                     ${!available
                                         ? 'opacity-50 cursor-not-allowed border-gray-100 bg-gray-50'
@@ -117,6 +138,7 @@ export default function DoctorStepSection() {
                                     <span className={`inline-block mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full ${STATUS_STYLES[doc.status] ?? 'bg-gray-100 text-gray-500'}`}>
                                         {STATUS_LABELS[doc.status] ?? doc.status}
                                     </span>
+                                    <ScheduleBadge doc={doc} />
                                 </div>
 
                                 {isSelected && (

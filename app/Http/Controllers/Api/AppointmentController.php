@@ -9,6 +9,28 @@ use Illuminate\Http\Request;
 class AppointmentController extends Controller
 {
     // -------------------------------------------------------------------------
+    // GET /api/availability?doctor_name=X&date=Y
+    // Returns the time slots already booked for a doctor on a given date.
+    // Only non-cancelled appointments are considered.
+    // -------------------------------------------------------------------------
+    public function availability(Request $request)
+    {
+        $request->validate([
+            'doctor_name' => 'required|string|max:255',
+            'date'        => 'required|date_format:Y-m-d',
+        ]);
+
+        $booked = Appointment::where('doctor_name', $request->doctor_name)
+            ->whereDate('date', $request->date)
+            ->where('status', 'confirmed')
+            ->pluck('time')
+            ->map(fn ($t) => substr($t, 0, 5)) // normalise HH:MM:SS → HH:MM
+            ->values();
+
+        return response()->json(['booked' => $booked]);
+    }
+
+    // -------------------------------------------------------------------------
     // GET /api/appointments
     // -------------------------------------------------------------------------
     public function index(Request $request)

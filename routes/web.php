@@ -42,6 +42,10 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('patient/page');
     })->name('patients');
 
+    Route::get('/reports', function () {
+        return Inertia::render('reports/page');
+    })->name('reports');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

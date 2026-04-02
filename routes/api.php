@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\UserManagementController;
 use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\ReportController;
 use Illuminate\Support\Facades\Route;
 
 // Auth routes under web middleware so sessions and CSRF work for the SPA
@@ -37,6 +38,9 @@ Route::middleware('web')->group(function () {
         // Patients
         Route::get('/patients',        [PatientController::class, 'index']);
         Route::get('/patients/{id}',   [PatientController::class, 'show']);
+
+        // Reports
+        Route::get('/reports/appointments-summary', [ReportController::class, 'appointmentsSummary']);
 
         // Services
         Route::get('/services',         [ServiceController::class, 'index']);

@@ -8,6 +8,7 @@ import doctorsReducer from '../pages/doctors/_redux/doctor-slice';
 import servicesReducer from '../pages/services/_redux/service-slice';
 import scheduleReducer from '../pages/schedule/_redux/schedule-slice';
 import patientsReducer from '../pages/patient/_redux/patient-slice';
+import reportsReducer from '../pages/reports/_redux/report-slice';
 
 const store = configureStore({
     reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
         userManagement: userManagementReducer,
         doctors: doctorsReducer,
         patients: patientsReducer,
+        reports: reportsReducer,
         services: servicesReducer,
         schedule: scheduleReducer,
     },

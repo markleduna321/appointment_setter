@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { get_doctors_service } from '../../../services/doctor-service';
 
 export const fetchBookingServicesThunk = createAsyncThunk(
     'bookNow/fetchServices',
@@ -9,6 +10,17 @@ export const fetchBookingServicesThunk = createAsyncThunk(
             return res.data;
         } catch (err) {
             return rejectWithValue(err.response?.data?.message ?? 'Failed to load services.');
+        }
+    }
+);
+
+export const fetchBookingDoctorsThunk = createAsyncThunk(
+    'bookNow/fetchDoctors',
+    async (_, { rejectWithValue }) => {
+        try {
+            return await get_doctors_service({ status: 'available' });
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.message ?? 'Failed to load doctors.');
         }
     }
 );

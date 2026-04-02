@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { submitBookingThunk, fetchBookingServicesThunk } from './book-now-thunk';
+import { submitBookingThunk, fetchBookingServicesThunk, fetchBookingDoctorsThunk } from './book-now-thunk';
 
 const bookNowSlice = createSlice({
     name: 'bookNow',
@@ -14,6 +14,8 @@ const bookNowSlice = createSlice({
         },
         bookingServices: [],
         bookingServicesLoading: false,
+        bookingDoctors: [],
+        bookingDoctorsLoading: false,
         submitted: false,
         submitting: false,
         error: null,
@@ -43,6 +45,10 @@ const bookNowSlice = createSlice({
             .addCase(fetchBookingServicesThunk.pending,   (s) => { s.bookingServicesLoading = true; })
             .addCase(fetchBookingServicesThunk.fulfilled, (s, a) => { s.bookingServicesLoading = false; s.bookingServices = a.payload; })
             .addCase(fetchBookingServicesThunk.rejected,  (s) => { s.bookingServicesLoading = false; })
+
+            .addCase(fetchBookingDoctorsThunk.pending,   (s) => { s.bookingDoctorsLoading = true; })
+            .addCase(fetchBookingDoctorsThunk.fulfilled, (s, a) => { s.bookingDoctorsLoading = false; s.bookingDoctors = a.payload ?? []; })
+            .addCase(fetchBookingDoctorsThunk.rejected,  (s) => { s.bookingDoctorsLoading = false; })
 
             .addCase(submitBookingThunk.pending,   (s) => { s.submitting = true; s.error = null; })
             .addCase(submitBookingThunk.fulfilled,  (s) => { s.submitting = false; s.submitted = true; })

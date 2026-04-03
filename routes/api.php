@@ -11,17 +11,17 @@ use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\ReportController;
 use Illuminate\Support\Facades\Route;
 
+// Truly public endpoints — no session, no CSRF, no auth required
+Route::get('/doctors',       [DoctorController::class, 'index']);
+Route::get('/doctors/{id}',  [DoctorController::class, 'show']);
+Route::get('/services',      [ServiceController::class, 'index']);
+Route::get('/services/{id}', [ServiceController::class, 'show']);
+
 // Auth routes under web middleware so sessions and CSRF work for the SPA
 Route::middleware('web')->group(function () {
     Route::post('/auth/login', [AuthApiController::class, 'login']);
     Route::post('/auth/register', [AuthApiController::class, 'register']);
     Route::post('/auth/logout', [AuthApiController::class, 'logout'])->middleware('auth');
-
-    // Public endpoints: allow listing and viewing doctors/services without authentication
-    Route::get('/doctors',        [DoctorController::class, 'index']);
-    Route::get('/doctors/{id}',   [DoctorController::class, 'show']);
-    Route::get('/services',       [ServiceController::class, 'index']);
-    Route::get('/services/{id}',  [ServiceController::class, 'show']);
 
     // Dashboard and protected routes
     Route::middleware('auth')->group(function () {

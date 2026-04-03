@@ -3,12 +3,20 @@ import { setFilters } from '../_redux/service-slice';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export const CATEGORIES = [
+    'Cardiology',
     'Consultation',
-    'Diagnostic',
     'Dental',
+    'Dermatology',
+    'Diagnostic',
     'Eye Care',
+    'General Practice',
     'Laboratory',
+    'OB-GYN',
+    'Orthopedics',
+    'Pediatrics',
     'Procedure',
+    'Psychiatry',
+    'Radiology',
     'Therapy',
     'Vaccination',
 ];

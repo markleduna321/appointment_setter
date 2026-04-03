@@ -62,7 +62,7 @@ const adminNavItems = [
 ];
 
 export default function Layout({ children }) {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const { url, props } = usePage();
     const authUser = props.auth?.user;

@@ -10,7 +10,7 @@ import store from './app/store/store';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title === 'Home' ? 'Home' : `${title} - ${appName}`,
     resolve: (name) =>
         resolvePageComponent(
             `./app/pages/${name}.jsx`,

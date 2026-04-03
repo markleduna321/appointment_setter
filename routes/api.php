@@ -60,6 +60,7 @@ Route::middleware('web')->group(function () {
 
         // Reports
         Route::get('/reports/appointments-summary', [ReportController::class, 'appointmentsSummary']);
+        Route::get('/reports/advanced',             [ReportController::class, 'advanced']);
 
         // Profile API (current authenticated user)
         Route::get('/profile', [\App\Http\Controllers\Api\ProfileApiController::class, 'show']);

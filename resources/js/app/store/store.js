@@ -10,6 +10,7 @@ import scheduleReducer from '../pages/schedule/_redux/schedule-slice';
 import patientsReducer from '../pages/patient/_redux/patient-slice';
 import patientRecordsReducer from '../pages/patient/_redux/patient-record-slice';
 import reportsReducer from '../pages/reports/_redux/report-slice';
+import advanceReportsReducer from '../pages/advance_reports/_redux/advance-report-slice';
 import profileReducer from '../pages/profile/_redux/profile-slice';
 import notificationsReducer from '../notifications/_redux/notification-slice';
 
@@ -24,6 +25,7 @@ const store = configureStore({
         patients: patientsReducer,
         patientRecords: patientRecordsReducer,
         reports: reportsReducer,
+        advanceReports: advanceReportsReducer,
         profile: profileReducer,
         services: servicesReducer,
         schedule: scheduleReducer,

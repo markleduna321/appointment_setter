@@ -46,6 +46,10 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('reports/page');
     })->name('reports');
 
+    Route::get('/advance-reports', function () {
+        return Inertia::render('advance_reports/page');
+    })->name('advance-reports');
+
     Route::get('/profile', function () {
         return Inertia::render('profile/page');
     })->name('profile.edit');

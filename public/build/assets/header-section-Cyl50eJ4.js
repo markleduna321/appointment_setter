@@ -1,1 +1,0 @@
-import{j as t}from"./app-DBd5BlMo.js";function a(){return t.jsxs("div",{className:"mb-6",children:[t.jsx("h1",{className:"text-2xl font-extrabold text-gray-900 tracking-tight",children:"Dashboard"}),t.jsx("p",{className:"text-sm text-gray-500 mt-0.5",children:"Welcome back! Here's what's happening today."})]})}export{a as default};

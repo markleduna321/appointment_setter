@@ -143,7 +143,7 @@ export default function LoginPage() {
                     </div>
 
                     {/* Heading */}
-                    <div className="mb-6">
+                    <div key={`heading-${activeTab}`} className="mb-6 animate-fade-slide-in">
                         {activeTab === 'login' ? (
                             <>
                                 <h1 className="text-2xl font-extrabold text-gray-900">Welcome back!</h1>
@@ -157,7 +157,7 @@ export default function LoginPage() {
                         )}
                     </div>
 
-                    {/* Social Login (UI only — can be wired later) */}
+                    {/* Social Login (UI only — can be wired later) 
                     <div className="flex gap-3 mb-6">
                         <button
                             type="button"
@@ -180,21 +180,23 @@ export default function LoginPage() {
                             </svg>
                             GitHub
                         </button>
-                    </div>
+                    </div> */}
 
-                    {/* Divider */}
+                    {/* Divider
                     <div className="flex items-center gap-3 mb-6">
                         <div className="flex-1 h-px bg-gray-200" />
                         <span className="text-xs text-gray-400 font-medium">or continue with email</span>
                         <div className="flex-1 h-px bg-gray-200" />
-                    </div>
+                    </div>  */}
 
                     {/* Active Form */}
-                    {activeTab === 'login' ? (
-                        <LoginForm onSwitchToRegister={() => setActiveTab('register')} />
-                    ) : (
-                        <RegisterForm onSwitchToLogin={() => setActiveTab('login')} />
-                    )}
+                    <div key={`form-${activeTab}`} className="animate-fade-slide-in">
+                        {activeTab === 'login' ? (
+                            <LoginForm onSwitchToRegister={() => setActiveTab('register')} />
+                        ) : (
+                            <RegisterForm onSwitchToLogin={() => setActiveTab('login')} />
+                        )}
+                    </div>
                 </div>
 
                 {/* Back to landing */}

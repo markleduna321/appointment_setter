@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\Doctor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,9 +20,23 @@ class DashboardController extends Controller
         $role  = $user->role;
         $today = now()->toDateString();
         $isPatient = $role === 'patient';
+        $isDoctor  = $role === 'doctor';
 
-        // Base query scoped to the patient's own appointments when role = patient
-        $base = Appointment::when($isPatient, fn ($q) => $q->where('user_id', $user->id));
+        // Resolve doctor profile for scoping
+        $doctorProfile = null;
+        if ($isDoctor) {
+            $doctorProfile = Doctor::where('user_id', $user->id)->first();
+        }
+
+        // Base query scoped by role
+        $base = Appointment::when($isPatient, fn ($q) => $q->where('user_id', $user->id))
+                           ->when($isDoctor, function ($q) use ($doctorProfile) {
+                               if ($doctorProfile) {
+                                   $q->where('doctor_name', $doctorProfile->name);
+                               } else {
+                                   $q->whereRaw('0 = 1');
+                               }
+                           });
 
         // --- Stats ---
         $todaysTotal = (clone $base)->whereDate('date', $today)->count();

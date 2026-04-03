@@ -11,6 +11,10 @@ import ChartsSection from './_sections/charts-section';
 import DashboardTableSection from './_sections/dashboard-table-section';
 import AnnouncementsSection from './_sections/announcements-section';
 
+// Doctor sections
+import DoctorHeaderSection from './_sections/doctor-header-section';
+import DoctorUpcomingSection from './_sections/doctor-upcoming-section';
+
 // Patient sections
 import PatientHeaderSection from './_sections/patient-header-section';
 import PatientStatsSection from './_sections/patient-stats-section';
@@ -24,7 +28,8 @@ export default function DashboardPage() {
     const dispatch = useDispatch();
     const { auth } = usePage().props;
     const role = auth?.user?.role;
-    const isAdmin = role === 'admin' || role === 'super_admin';
+    const isAdmin  = role === 'admin' || role === 'super_admin';
+    const isDoctor = role === 'doctor';
 
     useEffect(() => {
         dispatch(fetchDashboardSummaryThunk());
@@ -38,7 +43,6 @@ export default function DashboardPage() {
                 <>
                     <HeaderSection />
                     <StatsSection />
-                    
 
                     <div className="mb-6">
                         <ChartsSection />
@@ -47,6 +51,16 @@ export default function DashboardPage() {
                     <div className="grid xl:grid-cols-3 gap-5">
                         <div className="xl:col-span-2">
                             <DashboardTableSection />
+                        </div>
+                        <AnnouncementsSection />
+                    </div>
+                </>
+            ) : isDoctor ? (
+                <>
+                    <DoctorHeaderSection />
+                    <div className="grid xl:grid-cols-3 gap-5">
+                        <div className="xl:col-span-2">
+                            <DoctorUpcomingSection />
                         </div>
                         <AnnouncementsSection />
                     </div>

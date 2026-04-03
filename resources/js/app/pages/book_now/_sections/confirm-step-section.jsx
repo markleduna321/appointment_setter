@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { usePage } from '@inertiajs/react';
 import { prevStep, resetBooking } from '../_redux/book-now-slice';
 import { submitBookingThunk } from '../_redux/book-now-thunk';
 import {
@@ -28,12 +29,13 @@ const ICON_CLASS = 'w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0';
 export default function ConfirmStepSection() {
     const dispatch  = useDispatch();
     const { booking, submitting, error } = useSelector((s) => s.bookNow);
-    const authUser  = useSelector((s) => s.auth?.user);
+    const { props } = usePage();
+    const authUser  = props.auth?.user;
 
     const handleSubmit = () => {
         dispatch(submitBookingThunk({
             ...booking,
-            patient_name: authUser?.name ?? 'Patient',
+            patient_name: authUser?.name ?? '',
             status: 'pending',
         }));
     };

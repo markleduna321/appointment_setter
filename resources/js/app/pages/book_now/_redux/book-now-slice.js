@@ -12,6 +12,7 @@ const bookNowSlice = createSlice({
             date:             '',
             time:             '',
             notes:            '',
+            visit_type:       'onsite',
         },
         bookingServices: [],
         bookingServicesLoading: false,
@@ -46,7 +47,7 @@ const bookNowSlice = createSlice({
         },
         resetBooking(state) {
             state.step = 1;
-            state.booking = { service: '', service_category: '', doctor_name: '', date: '', time: '', notes: '' };
+            state.booking = { service: '', service_category: '', doctor_name: '', date: '', time: '', notes: '', visit_type: 'onsite' };
             state.bookingDoctors = [];
             state.selectedDoctor = null;
             state.submitted = false;

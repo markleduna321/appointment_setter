@@ -129,6 +129,7 @@ class AppointmentController extends Controller
             'date'         => 'required|date|after_or_equal:today',
             'time'         => 'required|date_format:H:i',
             'notes'        => 'nullable|string|max:1000',
+            'visit_type'   => 'sometimes|in:onsite,video_call',
             // Staff can optionally link to an existing user account
             'user_id'      => 'sometimes|nullable|integer|exists:users,id',
         ]);
@@ -159,6 +160,7 @@ class AppointmentController extends Controller
             'time'         => $data['time'],
             'notes'        => $data['notes'] ?? null,
             'status'       => 'pending',
+            'visit_type'   => $data['visit_type'] ?? 'onsite',
             'source'       => $user->role === 'patient' ? 'online' : 'walkin',
         ]);
 

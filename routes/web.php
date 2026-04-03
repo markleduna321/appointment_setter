@@ -50,6 +50,10 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('advance_reports/page');
     })->name('advance-reports');
 
+    Route::get('/virtual-consultation', function () {
+        return Inertia::render('virtual_checkup/page');
+    })->name('virtual-consultation');
+
     Route::get('/profile', function () {
         return Inertia::render('profile/page');
     })->name('profile.edit');

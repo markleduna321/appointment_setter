@@ -21,12 +21,19 @@ const DASHBOARD_ICON = (
     </svg>
 );
 
+const VIDEO_ICON = (
+    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+    </svg>
+);
+
 /** Nav shown to patients / clients */
 const clientNavItems = [
-    { label: 'Home',            href: '/dashboard',        icon: DASHBOARD_ICON },
-    { label: 'My Appointments', href: '/appointments',     icon: <CalendarDaysIcon className="w-5 h-5" /> },
-    { label: 'Book Now',        href: '/appointments/new', icon: <ClipboardDocumentListIcon className="w-5 h-5" /> },
-    { label: 'My Profile',      href: '/profile',          icon: <UserIcon className="w-5 h-5" /> },
+    { label: 'Home',            href: '/dashboard',              icon: DASHBOARD_ICON },
+    { label: 'My Appointments', href: '/appointments',           icon: <CalendarDaysIcon className="w-5 h-5" /> },
+    { label: 'Book Now',        href: '/appointments/new',       icon: <ClipboardDocumentListIcon className="w-5 h-5" /> },
+    { label: 'Virtual Check Up', href: '/virtual-consultation',   icon: VIDEO_ICON },
+    { label: 'My Profile',      href: '/profile',                icon: <UserIcon className="w-5 h-5" /> },
 ];
 
 /** Nav shown to clinic admins */
@@ -73,10 +80,11 @@ const adminNavItems = [
 
 /** Nav shown to doctors */
 const doctorNavItems = [
-    { label: 'Dashboard',    href: '/dashboard',    icon: DASHBOARD_ICON },
-    { label: 'Appointments', href: '/appointments', icon: <CalendarDaysIcon className="w-5 h-5" /> },
-    { label: 'Patients',     href: '/patients',     icon: <HeartIcon className="w-5 h-5" /> },
-    { label: 'My Profile',   href: '/profile',      icon: <UserIcon className="w-5 h-5" /> },
+    { label: 'Dashboard',    href: '/dashboard',            icon: DASHBOARD_ICON },
+    { label: 'Appointments', href: '/appointments',         icon: <CalendarDaysIcon className="w-5 h-5" /> },
+    { label: 'Patients',     href: '/patients',             icon: <HeartIcon className="w-5 h-5" /> },
+    { label: 'Video Call',   href: '/virtual-consultation', icon: VIDEO_ICON },
+    { label: 'My Profile',   href: '/profile',              icon: <UserIcon className="w-5 h-5" /> },
 ];
 
 export default function Layout({ children }) {

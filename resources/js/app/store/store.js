@@ -8,6 +8,7 @@ import doctorsReducer from '../pages/doctors/_redux/doctor-slice';
 import servicesReducer from '../pages/services/_redux/service-slice';
 import scheduleReducer from '../pages/schedule/_redux/schedule-slice';
 import patientsReducer from '../pages/patient/_redux/patient-slice';
+import patientRecordsReducer from '../pages/patient/_redux/patient-record-slice';
 import reportsReducer from '../pages/reports/_redux/report-slice';
 import profileReducer from '../pages/profile/_redux/profile-slice';
 import notificationsReducer from '../notifications/_redux/notification-slice';
@@ -21,6 +22,7 @@ const store = configureStore({
         userManagement: userManagementReducer,
         doctors: doctorsReducer,
         patients: patientsReducer,
+        patientRecords: patientRecordsReducer,
         reports: reportsReducer,
         profile: profileReducer,
         services: servicesReducer,

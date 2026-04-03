@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\UserManagementController;
 use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\PatientRecordController;
 use App\Http\Controllers\Api\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,17 @@ Route::middleware('web')->group(function () {
         // Patients
         Route::get('/patients',        [PatientController::class, 'index']);
         Route::get('/patients/{id}',   [PatientController::class, 'show']);
+        Route::post('/patients',       [PatientController::class, 'store']);
+        Route::put('/patients/{id}',   [PatientController::class, 'update']);
+        Route::delete('/patients/{id}',[PatientController::class, 'destroy']);
+
+        // Patient medical records
+        Route::get('/patients/{patientId}/records',         [PatientRecordController::class, 'index']);
+        Route::get('/patients/{patientId}/records/latest',  [PatientRecordController::class, 'latest']);
+        Route::post('/patients/{patientId}/records',        [PatientRecordController::class, 'store']);
+        Route::get('/patients/{patientId}/records/{id}',    [PatientRecordController::class, 'show']);
+        Route::put('/patients/{patientId}/records/{id}',    [PatientRecordController::class, 'update']);
+        Route::delete('/patients/{patientId}/records/{id}', [PatientRecordController::class, 'destroy']);
 
         // Reports
         Route::get('/reports/appointments-summary', [ReportController::class, 'appointmentsSummary']);

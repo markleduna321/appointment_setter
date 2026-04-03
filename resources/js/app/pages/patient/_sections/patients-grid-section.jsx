@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../_redux/patient-slice';
 import { deletePatientThunk } from '../_redux/patient-thunk';
+import { openDrawer } from '../_redux/patient-record-slice';
+import { fetchLatestPatientRecordThunk } from '../_redux/patient-record-thunk';
 import { usePage } from '@inertiajs/react';
-import { PencilIcon, TrashIcon, EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, ClipboardDocumentListIcon, ClockIcon } from '@heroicons/react/24/outline';
 
 const AVATAR_GRADIENTS = [
     'from-blue-400 to-indigo-600',
@@ -23,25 +25,19 @@ function initials(name = '') {
     return name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 }
 
-function SkeletonCard() {
+function SkeletonRow() {
     return (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 animate-pulse">
-            <div className="flex items-start gap-4 mb-4">
-                <div className="w-14 h-14 rounded-xl bg-gray-200" />
-                <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-3/4" />
-                    <div className="h-3 bg-gray-100 rounded w-1/2" />
-                </div>
-            </div>
-            <div className="space-y-2">
-                <div className="h-3 bg-gray-100 rounded w-full" />
-                <div className="h-3 bg-gray-100 rounded w-2/3" />
-            </div>
-        </div>
+        <tr className="animate-pulse">
+            <td className="px-4 py-3"><div className="flex items-center gap-3"><div className="w-9 h-9 rounded-full bg-gray-200 flex-shrink-0" /><div className="h-3 bg-gray-200 rounded w-28" /></div></td>
+            <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-36" /></td>
+            <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-24" /></td>
+            <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-20" /></td>
+            <td className="px-4 py-3" />
+        </tr>
     );
 }
 
-function PatientCard({ patient, isAdmin }) {
+function PatientRow({ patient, isAdmin, index }) {
     const dispatch = useDispatch();
 
     const handleDelete = () => {
@@ -50,56 +46,90 @@ function PatientCard({ patient, isAdmin }) {
         }
     };
 
+    const handleOpenProfile = () => dispatch(openDrawer(patient));
+
+    const handleLatestCheckup = (e) => {
+        e.stopPropagation();
+        dispatch(fetchLatestPatientRecordThunk(patient.id));
+    };
+
     return (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-4">
-            <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${avatarGradient(patient.name)} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
-                    {initials(patient.name ?? '')}
+        <tr className="group hover:bg-green-50/40 transition-colors border-t border-gray-100">
+            {/* # + Avatar + Name (clickable) */}
+            <td className="px-4 py-3">
+                <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-300 font-medium w-5 text-right flex-shrink-0">{index + 1}</span>
+                    <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${avatarGradient(patient.name)} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
+                        {initials(patient.name ?? '')}
+                    </div>
+                    <button
+                        onClick={handleOpenProfile}
+                        className="text-sm font-semibold text-gray-800 hover:text-green-700 hover:underline truncate max-w-[160px] text-left transition-colors"
+                    >
+                        {patient.name ?? '—'}
+                    </button>
                 </div>
-                <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 truncate">{patient.name ?? '—'}</p>
-                    {patient.email && <p className="text-xs text-gray-500 mt-0.5 truncate">{patient.email}</p>}
-                    {patient.phone && <p className="text-xs text-gray-400 mt-1">{patient.phone}</p>}
+            </td>
+
+            {/* Email */}
+            <td className="px-4 py-3 text-sm text-gray-500 truncate max-w-[200px]">
+                {patient.email ?? <span className="text-gray-300">—</span>}
+            </td>
+
+            {/* Phone */}
+            <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
+                {patient.phone ?? <span className="text-gray-300">—</span>}
+            </td>
+
+            {/* Joined */}
+            <td className="px-4 py-3 text-sm text-gray-400 whitespace-nowrap">
+                {patient.created_at
+                    ? new Date(patient.created_at).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' })
+                    : <span className="text-gray-300">—</span>
+                }
+            </td>
+
+            {/* Actions */}
+            <td className="px-4 py-3 text-right">
+                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {/* Latest checkup — always visible for any role */}
+                    <button
+                        onClick={handleLatestCheckup}
+                        className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                        title="Latest Checkup"
+                    >
+                        <ClockIcon className="w-3.5 h-3.5" />
+                        Latest
+                    </button>
+                    {/* Patient records drawer */}
+                    <button
+                        onClick={handleOpenProfile}
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors"
+                        title="Patient Profile & Records"
+                    >
+                        <ClipboardDocumentListIcon className="w-4 h-4" />
+                    </button>
+                    {isAdmin && (
+                        <>
+                            <button
+                                onClick={() => dispatch(openModal(patient))}
+                                className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                                title="Edit Patient"
+                            >
+                                <PencilIcon className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                                title="Delete"
+                            >
+                                <TrashIcon className="w-4 h-4" />
+                            </button>
+                        </>
+                    )}
                 </div>
-                {isAdmin && (
-                    <div className="flex gap-1 flex-shrink-0">
-                        <button
-                            onClick={() => dispatch(openModal(patient))}
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors"
-                            title="Edit"
-                        >
-                            <PencilIcon className="w-4 h-4" />
-                        </button>
-                        <button
-                            onClick={handleDelete}
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Delete"
-                        >
-                            <TrashIcon className="w-4 h-4" />
-                        </button>
-                    </div>
-                )}
-            </div>
-
-            <div className="space-y-1">
-                {patient.email && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <EnvelopeIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span className="truncate">{patient.email}</span>
-                    </div>
-                )}
-                {patient.phone && (
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                        <PhoneIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span>{patient.phone}</span>
-                    </div>
-                )}
-            </div>
-
-            {patient.notes && (
-                <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{patient.notes}</p>
-            )}
-        </div>
+            </td>
+        </tr>
     );
 }
 
@@ -114,33 +144,50 @@ export default function PatientsGridSection() {
         return !search || (p.name ?? '').toLowerCase().includes(search) || (p.email ?? '').toLowerCase().includes(search);
     });
 
-    if (loading) {
-        return (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
-            </div>
-        );
-    }
-
-    if (!loading && filtered.length === 0) {
-        return (
-            <div className="text-center py-16">
-                <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                </div>
-                <p className="font-semibold text-gray-700">No patients found</p>
-                <p className="text-sm text-gray-400 mt-1">{filters.search ? 'Try adjusting your search' : 'Add a patient to get started'}</p>
-            </div>
-        );
-    }
-
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {filtered.map((p) => (
-                <PatientCard key={p.id} patient={p} isAdmin={isAdmin} />
-            ))}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <table className="w-full text-left">
+                <thead>
+                    <tr className="bg-gray-50 border-b border-gray-100">
+                        <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Patient</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Joined</th>
+                        <th className="px-4 py-3" />
+                    </tr>
+                </thead>
+                <tbody>
+                    {loading
+                        ? Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} />)
+                        : filtered.length === 0
+                            ? (
+                                <tr>
+                                    <td colSpan={5} className="py-16 text-center">
+                                        <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <svg className="w-8 h-8 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </div>
+                                        <p className="font-semibold text-gray-700">No patients found</p>
+                                        <p className="text-sm text-gray-400 mt-1">{filters.search ? 'Try adjusting your search' : 'Add a patient to get started'}</p>
+                                    </td>
+                                </tr>
+                            )
+                            : filtered.map((p, i) => (
+                                <PatientRow key={p.id} patient={p} isAdmin={isAdmin} index={i} />
+                            ))
+                    }
+                </tbody>
+            </table>
+
+            {/* Footer count */}
+            {!loading && filtered.length > 0 && (
+                <div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
+                    <p className="text-xs text-gray-400">
+                        Showing <span className="font-semibold text-gray-600">{filtered.length}</span> patient{filtered.length !== 1 ? 's' : ''}
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

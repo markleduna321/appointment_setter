@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { openDetail } from '../_redux/schedule-slice';
 
@@ -61,16 +62,33 @@ function CurrentTimeLine() {
 }
 
 // ─── Single appointment block ─────────────────────────────────────────────────
-function AppointmentBlock({ appt, onClick }) {
+function AppointmentBlock({ appt, onClick, col, colCount, hoveredId, onHover }) {
     const top = apptTop(appt.time);
     const colorClass = STATUS_CARD[appt.status] ?? STATUS_CARD.pending;
     const isCancelled = appt.status === 'cancelled';
+    const isHovered = hoveredId === appt.id;
+
+    // Divide the column width evenly among overlapping appointments
+    const widthPct  = 100 / colCount;
+    const leftPct   = col * widthPct;
 
     return (
         <div
             onClick={onClick}
-            className={`absolute left-1 right-1 rounded-lg border-l-[3px] px-2 pt-1 pb-1.5 cursor-pointer hover:brightness-95 transition-all ${colorClass}`}
-            style={{ top, minHeight: '52px', zIndex: 10 }}
+            onMouseEnter={() => onHover(appt.id)}
+            onMouseLeave={() => onHover(null)}
+            className={`absolute rounded-lg border-l-[3px] px-2 pt-1 pb-1.5 cursor-pointer transition-all duration-150 ${colorClass} ${
+                isHovered
+                    ? 'ring-2 ring-offset-1 ring-blue-400 shadow-lg scale-[1.03] brightness-100'
+                    : 'shadow-sm hover:brightness-95'
+            }`}
+            style={{
+                top,
+                minHeight: '52px',
+                left: `calc(2px + ${leftPct}%)`,
+                width: `calc(${widthPct}% - 4px)`,
+                zIndex: isHovered ? 50 : 10,
+            }}
         >
             <p className={`text-xs font-semibold leading-tight truncate ${isCancelled ? 'line-through opacity-60' : ''}`}>
                 {appt.patient_name || 'Patient'}
@@ -86,6 +104,42 @@ function AppointmentBlock({ appt, onClick }) {
 function DayColumn({ dateStr, appointments, isToday }) {
     const dispatch = useDispatch();
     const totalHeight = HOURS.length * HOUR_HEIGHT;
+    const [hoveredId, setHoveredId] = useState(null);
+
+    // ── Compute overlap columns ──────────────────────────────────────────────
+    // Sort by time, then assign each appointment to a column slot so overlapping
+    // appointments sit side-by-side rather than stacking on top of each other.
+    const sorted = [...appointments].sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''));
+
+    // Each entry: { appt, col, colCount }
+    const laid = [];
+    const groups = []; // groups of overlapping appointments
+
+    for (const appt of sorted) {
+        const top = apptTop(appt.time);
+        const bottom = top + 52; // minHeight
+
+        // Find an existing group this overlaps with
+        let placed = false;
+        for (const group of groups) {
+            const overlaps = group.some(({ appt: a }) => {
+                const aTop = apptTop(a.time);
+                return top < aTop + 52 && bottom > aTop;
+            });
+            if (overlaps) {
+                group.push({ appt, top, bottom });
+                placed = true;
+                break;
+            }
+        }
+        if (!placed) groups.push([{ appt, top, bottom }]);
+    }
+
+    const colMap = new Map(); // appt.id → { col, colCount }
+    for (const group of groups) {
+        const n = group.length;
+        group.forEach(({ appt }, idx) => colMap.set(appt.id, { col: idx, colCount: n }));
+    }
 
     return (
         <div
@@ -94,29 +148,28 @@ function DayColumn({ dateStr, appointments, isToday }) {
         >
             {/* Hour grid lines */}
             {HOURS.map((h) => (
-                <div
-                    key={h}
-                    className="absolute w-full border-t border-gray-100"
-                    style={{ top: (h - TIME_START) * HOUR_HEIGHT }}
-                />
+                <div key={h} className="absolute w-full border-t border-gray-100" style={{ top: (h - TIME_START) * HOUR_HEIGHT }} />
             ))}
             {/* Half-hour dashed lines */}
             {HOURS.map((h) => (
-                <div
-                    key={`${h}-half`}
-                    className="absolute w-full border-t border-dashed border-gray-50"
-                    style={{ top: (h - TIME_START + 0.5) * HOUR_HEIGHT }}
-                />
+                <div key={`${h}-half`} className="absolute w-full border-t border-dashed border-gray-50" style={{ top: (h - TIME_START + 0.5) * HOUR_HEIGHT }} />
             ))}
 
             {/* Appointments */}
-            {appointments.map((appt) => (
-                <AppointmentBlock
-                    key={appt.id}
-                    appt={appt}
-                    onClick={() => dispatch(openDetail(appt))}
-                />
-            ))}
+            {sorted.map((appt) => {
+                const { col, colCount } = colMap.get(appt.id) ?? { col: 0, colCount: 1 };
+                return (
+                    <AppointmentBlock
+                        key={appt.id}
+                        appt={appt}
+                        col={col}
+                        colCount={colCount}
+                        hoveredId={hoveredId}
+                        onHover={setHoveredId}
+                        onClick={() => dispatch(openDetail(appt))}
+                    />
+                );
+            })}
 
             {/* Current time line */}
             {isToday && <CurrentTimeLine />}

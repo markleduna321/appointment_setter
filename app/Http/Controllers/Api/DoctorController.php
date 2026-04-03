@@ -39,11 +39,11 @@ class DoctorController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // POST /api/doctors  — admin/super_admin only
+    // POST /api/doctors  — super_admin only
     // -----------------------------------------------------------------------
     public function store(Request $request)
     {
-        $this->requireAdmin($request);
+        $this->requireSuperAdmin($request);
 
         $data = $request->validate([
             'name'           => 'required|string|max:255',
@@ -93,11 +93,11 @@ class DoctorController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // PUT /api/doctors/{id}  — admin/super_admin only
+    // PUT /api/doctors/{id}  — super_admin only
     // -----------------------------------------------------------------------
     public function update(Request $request, $id)
     {
-        $this->requireAdmin($request);
+        $this->requireSuperAdmin($request);
 
         $doctor = Doctor::findOrFail($id);
 

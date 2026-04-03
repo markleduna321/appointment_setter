@@ -161,7 +161,7 @@ export default function DoctorsGridSection() {
     const { doctors, filters, loading } = useSelector((s) => s.doctors);
     const { auth } = usePage().props;
     const role = auth?.user?.role;
-    const isAdmin = role === 'admin' || role === 'super_admin';
+    const isAdmin = role === 'super_admin';
 
     const filtered = doctors.filter((d) => {
         const search = (filters.search ?? '').toLowerCase();

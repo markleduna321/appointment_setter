@@ -16,6 +16,7 @@ export default function PatientsPage() {
 	const { auth } = usePage().props;
 	const role = auth?.user?.role;
 	const isAdmin = role === 'admin' || role === 'super_admin';
+	const canManagePatients = isAdmin || role === 'appointment_setter';
 
 	const drawerPatient = useSelector((s) => s.patientRecords.drawerPatient);
 
@@ -29,7 +30,7 @@ export default function PatientsPage() {
 			<HeaderSection />
 			<FiltersSection />
 			<PatientsGridSection />
-			{isAdmin && <PatientModalSection />}
+			{canManagePatients && <PatientModalSection />}
 			<PatientProfileDrawer />
 			<CheckupRecordModal patientId={drawerPatient?.id} />
 			{isAdmin && <AppointmentModalSection />}

@@ -15,6 +15,10 @@ import AnnouncementsSection from './_sections/announcements-section';
 import DoctorHeaderSection from './_sections/doctor-header-section';
 import DoctorUpcomingSection from './_sections/doctor-upcoming-section';
 
+// Appointment setter sections
+import SetterHeaderSection from './_sections/setter-header-section';
+import SetterUpcomingSection from './_sections/setter-upcoming-section';
+
 // Patient sections
 import PatientHeaderSection from './_sections/patient-header-section';
 import PatientStatsSection from './_sections/patient-stats-section';
@@ -30,6 +34,7 @@ export default function DashboardPage() {
     const role = auth?.user?.role;
     const isAdmin  = role === 'admin' || role === 'super_admin';
     const isDoctor = role === 'doctor';
+    const isSetter = role === 'appointment_setter';
 
     useEffect(() => {
         dispatch(fetchDashboardSummaryThunk());
@@ -64,6 +69,17 @@ export default function DashboardPage() {
                         </div>
                         <AnnouncementsSection />
                     </div>
+                </>
+            ) : isSetter ? (
+                <>
+                    <SetterHeaderSection />
+                    <div className="grid xl:grid-cols-3 gap-5">
+                        <div className="xl:col-span-2">
+                            <SetterUpcomingSection />
+                        </div>
+                        <AnnouncementsSection />
+                    </div>
+                    <AppointmentModalSection />
                 </>
             ) : (
                 <>

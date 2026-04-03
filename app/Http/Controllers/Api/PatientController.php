@@ -122,6 +122,9 @@ class PatientController extends Controller
      */
     public function store(Request $request)
     {
+        if (! in_array($request->user()->role, ['admin', 'super_admin', 'appointment_setter'])) {
+            abort(403, 'Forbidden');
+        }
         $data = $request->validate([
             'name'   => 'required|string|max:255',
             'source' => 'nullable|in:online,walkin',
@@ -153,6 +156,9 @@ class PatientController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (! in_array($request->user()->role, ['admin', 'super_admin', 'appointment_setter'])) {
+            abort(403, 'Forbidden');
+        }
         $patient = User::where('role', 'patient')->findOrFail($id);
 
         $data = $request->validate([
@@ -188,8 +194,11 @@ class PatientController extends Controller
     /**
      * DELETE /api/patients/{id}
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        if (! in_array($request->user()->role, ['admin', 'super_admin'])) {
+            abort(403, 'Forbidden');
+        }
         $patient = User::where('role', 'patient')->findOrFail($id);
         $patient->delete();
 

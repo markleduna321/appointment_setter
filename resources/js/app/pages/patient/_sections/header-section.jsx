@@ -6,7 +6,8 @@ import { PlusIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 export default function HeaderSection() {
     const dispatch = useDispatch();
     const { auth } = usePage().props;
-    const isAdmin = auth?.user?.role === 'admin' || auth?.user?.role === 'super_admin';
+    const role = auth?.user?.role;
+    const canAddPatient = role === 'admin' || role === 'super_admin' || role === 'appointment_setter';
 
     return (
         <div className="flex items-center justify-between mb-6">
@@ -20,7 +21,7 @@ export default function HeaderSection() {
                 </div>
             </div>
 
-            {isAdmin && (
+            {canAddPatient && (
                 <button
                     onClick={() => dispatch(openModal(null))}
                     className="flex items-center gap-2 px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors"

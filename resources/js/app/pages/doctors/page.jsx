@@ -13,7 +13,7 @@ export default function DoctorsPage() {
     const dispatch = useDispatch();
     const { auth } = usePage().props;
     const role = auth?.user?.role;
-    const isAdmin = role === 'admin' || role === 'super_admin';
+    const isSuperAdmin = role === 'super_admin';
 
     useEffect(() => {
         dispatch(fetchDoctorsThunk({}));
@@ -26,7 +26,7 @@ export default function DoctorsPage() {
             <StatsSection />
             <FiltersSection />
             <DoctorsGridSection />
-            {isAdmin && <DoctorModalSection />}
+            {isSuperAdmin && <DoctorModalSection />}
         </Layout>
     );
 }

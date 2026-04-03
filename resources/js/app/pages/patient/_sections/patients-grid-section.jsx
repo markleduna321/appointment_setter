@@ -66,7 +66,7 @@ function AppointmentBadge({ appointment, showDate = false }) {
     );
 }
 
-function PatientRow({ patient, isAdmin, index }) {
+function PatientRow({ patient, isAdmin, canEdit, index }) {
     const dispatch = useDispatch();
 
     const handleDelete = () => {
@@ -168,23 +168,23 @@ function PatientRow({ patient, isAdmin, index }) {
                     >
                         <ClipboardDocumentListIcon className="w-4 h-4" />
                     </button>
+                    {canEdit && (
+                        <button
+                            onClick={() => dispatch(openModal(patient))}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            title="Edit Patient"
+                        >
+                            <PencilIcon className="w-4 h-4" />
+                        </button>
+                    )}
                     {isAdmin && (
-                        <>
-                            <button
-                                onClick={() => dispatch(openModal(patient))}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                                title="Edit Patient"
-                            >
-                                <PencilIcon className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                                title="Delete"
-                            >
-                                <TrashIcon className="w-4 h-4" />
-                            </button>
-                        </>
+                        <button
+                            onClick={handleDelete}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                            title="Delete"
+                        >
+                            <TrashIcon className="w-4 h-4" />
+                        </button>
                     )}
                 </div>
             </td>
@@ -196,7 +196,8 @@ export default function PatientsGridSection() {
     const { patients, filters, loading } = useSelector((s) => s.patients);
     const { auth } = usePage().props;
     const role = auth?.user?.role;
-    const isAdmin = role === 'admin' || role === 'super_admin';
+    const isAdmin  = role === 'admin' || role === 'super_admin';
+    const canEdit  = isAdmin || role === 'appointment_setter';
 
     const filtered = (patients || []).filter((p) => {
         const search = (filters.search ?? '').toLowerCase();
@@ -235,7 +236,7 @@ export default function PatientsGridSection() {
                                 </tr>
                             )
                             : filtered.map((p, i) => (
-                                <PatientRow key={p.id} patient={p} isAdmin={isAdmin} index={i} />
+                                <PatientRow key={p.id} patient={p} isAdmin={isAdmin} canEdit={canEdit} index={i} />
                             ))
                     }
                 </tbody>

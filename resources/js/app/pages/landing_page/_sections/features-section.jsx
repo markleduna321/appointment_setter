@@ -17,7 +17,7 @@ const features = [
     {
         icon: <BellAlertIcon className="w-6 h-6 text-white" />,
         title: 'Smart Reminders',
-        description: 'Automated SMS, email, and in-app reminders so you never miss an appointment again.',
+        description: 'Automated emails, and in-app reminders so you never miss an appointment again.',
         gradient: 'from-amber-400 to-orange-500',
     },
     {

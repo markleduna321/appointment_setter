@@ -3,8 +3,13 @@
 namespace App\Services;
 
 use App\Events\AppointmentNotificationSent;
+use App\Mail\AppointmentCancelledMail;
+use App\Mail\AppointmentCompletedMail;
+use App\Mail\AppointmentConfirmedMail;
+use App\Mail\AppointmentRescheduledMail;
 use App\Models\AppNotification;
 use App\Models\Appointment;
+use Illuminate\Support\Facades\Mail;
 
 class NotificationService
 {
@@ -56,6 +61,11 @@ class NotificationService
                     "Your appointment for {$service} with {$doctor} on {$date} has been confirmed.",
                     $appt->id
                 );
+                // Email
+                $email = $appt->patient?->email;
+                if ($email) {
+                    Mail::to($email)->queue(new AppointmentConfirmedMail($appt));
+                }
                 break;
 
             case 'cancelled':
@@ -64,6 +74,11 @@ class NotificationService
                     "Your appointment for {$service} with {$doctor} on {$date} has been cancelled.",
                     $appt->id
                 );
+                // Email
+                $email = $appt->patient?->email;
+                if ($email) {
+                    Mail::to($email)->queue(new AppointmentCancelledMail($appt));
+                }
                 break;
 
             case 'completed':
@@ -72,6 +87,11 @@ class NotificationService
                     "Your appointment for {$service} with {$doctor} on {$date} has been marked as completed.",
                     $appt->id
                 );
+                // Email
+                $email = $appt->patient?->email;
+                if ($email) {
+                    Mail::to($email)->queue(new AppointmentCompletedMail($appt));
+                }
                 break;
 
             case 'pending':
@@ -82,6 +102,11 @@ class NotificationService
                         "Your appointment for {$service} with {$doctor} has been rescheduled to {$date}.",
                         $appt->id
                     );
+                    // Email
+                    $email = $appt->patient?->email;
+                    if ($email) {
+                        Mail::to($email)->queue(new AppointmentRescheduledMail($appt));
+                    }
                 }
                 break;
         }

@@ -3,8 +3,9 @@ import { openModal } from '../_redux/patient-slice';
 import { deletePatientThunk } from '../_redux/patient-thunk';
 import { openDrawer } from '../_redux/patient-record-slice';
 import { fetchLatestPatientRecordThunk } from '../_redux/patient-record-thunk';
+import { openModal as openAppointmentModal } from '../../appointments/_redux/appointment-slice';
 import { usePage } from '@inertiajs/react';
-import { PencilIcon, TrashIcon, ClipboardDocumentListIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, ClipboardDocumentListIcon, ClockIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 
 const AVATAR_GRADIENTS = [
     'from-blue-400 to-indigo-600',
@@ -32,8 +33,36 @@ function SkeletonRow() {
             <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-36" /></td>
             <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-24" /></td>
             <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-20" /></td>
+            <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-20" /></td>
+            <td className="px-4 py-3"><div className="h-3 bg-gray-100 rounded w-20" /></td>
             <td className="px-4 py-3" />
         </tr>
+    );
+}
+
+const APPT_STATUS = {
+    pending:   { label: 'Pending',   cls: 'bg-yellow-100 text-yellow-700' },
+    confirmed: { label: 'Confirmed', cls: 'bg-blue-100 text-blue-700'   },
+    completed: { label: 'Completed', cls: 'bg-green-100 text-green-700' },
+    cancelled: { label: 'Cancelled', cls: 'bg-red-100 text-red-500'    },
+};
+
+function AppointmentBadge({ appointment, showDate = false }) {
+    if (!appointment) return <span className="text-gray-300 text-xs">—</span>;
+    const cfg = APPT_STATUS[appointment.status] ?? { label: appointment.status, cls: 'bg-gray-100 text-gray-500' };
+    const dateStr = showDate && appointment.date
+        ? new Date(appointment.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })
+        : null;
+    return (
+        <div className="flex flex-col items-start gap-0.5">
+            <span className={`inline-block px-2 py-0.5 text-xs font-semibold rounded-full ${cfg.cls}`}>
+                {cfg.label}
+            </span>
+            <span className="text-xs text-gray-400">
+                {dateStr ? dateStr : (appointment.time ? appointment.time.slice(0, 5) : '')}
+                {appointment.doctor_name ? ` · ${appointment.doctor_name}` : ''}
+            </span>
+        </div>
     );
 }
 
@@ -53,6 +82,11 @@ function PatientRow({ patient, isAdmin, index }) {
         dispatch(fetchLatestPatientRecordThunk(patient.id));
     };
 
+    const handleBookAppointment = (e) => {
+        e.stopPropagation();
+        dispatch(openAppointmentModal({ _prefill: { patient_name: patient.name, user_id: patient.id } }));
+    };
+
     return (
         <tr className="group hover:bg-green-50/40 transition-colors border-t border-gray-100">
             {/* # + Avatar + Name (clickable) */}
@@ -68,6 +102,11 @@ function PatientRow({ patient, isAdmin, index }) {
                     >
                         {patient.name ?? '—'}
                     </button>
+                    {patient.source === 'walkin' && (
+                        <span className="flex-shrink-0 px-1.5 py-0.5 text-[10px] font-semibold rounded-md bg-orange-100 text-orange-600">
+                            Walk-in
+                        </span>
+                    )}
                 </div>
             </td>
 
@@ -89,6 +128,16 @@ function PatientRow({ patient, isAdmin, index }) {
                 }
             </td>
 
+            {/* Today's Appointment */}
+            <td className="px-4 py-3">
+                <AppointmentBadge appointment={patient.today_appointment ?? null} />
+            </td>
+
+            {/* Upcoming Appointment */}
+            <td className="px-4 py-3">
+                <AppointmentBadge appointment={patient.upcoming_appointment ?? null} showDate />
+            </td>
+
             {/* Actions */}
             <td className="px-4 py-3 text-right">
                 <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -101,6 +150,16 @@ function PatientRow({ patient, isAdmin, index }) {
                         <ClockIcon className="w-3.5 h-3.5" />
                         Latest
                     </button>
+                    {isAdmin && (
+                        <button
+                            onClick={handleBookAppointment}
+                            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors"
+                            title="Book Appointment"
+                        >
+                            <CalendarDaysIcon className="w-3.5 h-3.5" />
+                            Book
+                        </button>
+                    )}
                     {/* Patient records drawer */}
                     <button
                         onClick={handleOpenProfile}
@@ -153,6 +212,8 @@ export default function PatientsGridSection() {
                         <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
                         <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</th>
                         <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Joined</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Today's Appt</th>
+                        <th className="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Upcoming Appt</th>
                         <th className="px-4 py-3" />
                     </tr>
                 </thead>
@@ -162,7 +223,7 @@ export default function PatientsGridSection() {
                         : filtered.length === 0
                             ? (
                                 <tr>
-                                    <td colSpan={5} className="py-16 text-center">
+                                    <td colSpan={7} className="py-16 text-center">
                                         <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <svg className="w-8 h-8 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />

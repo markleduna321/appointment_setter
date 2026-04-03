@@ -57,6 +57,16 @@ class AppointmentController extends Controller
             $query->where('user_id', $user->id);
         }
 
+        // Doctors only see appointments assigned to them by name
+        if ($role === 'doctor') {
+            $doctorProfile = \App\Models\Doctor::where('user_id', $user->id)->first();
+            if ($doctorProfile) {
+                $query->where('doctor_name', $doctorProfile->name);
+            } else {
+                $query->whereRaw('0 = 1');
+            }
+        }
+
         // Optional filters
         if ($request->filled('status') && $request->status !== 'all') {
             $query->where('status', $request->status);
@@ -76,6 +86,17 @@ class AppointmentController extends Controller
                 $q->where('service', 'like', $search)
                   ->orWhere('doctor_name', 'like', $search)
                   ->orWhereHas('patient', fn ($p) => $p->where('name', 'like', $search));
+            });
+        }
+
+        // Filter by patient's user_id (used by the patient profile drawer)
+        if ($request->filled('user_id') && in_array($role, ['admin', 'super_admin', 'appointment_setter'])) {
+            $patientName = \App\Models\User::where('id', $request->user_id)->value('name');
+            $query->where(function ($q) use ($request, $patientName) {
+                $q->where('user_id', $request->user_id);
+                if ($patientName) {
+                    $q->orWhere('patient_name', $patientName);
+                }
             });
         }
 
@@ -138,6 +159,7 @@ class AppointmentController extends Controller
             'time'         => $data['time'],
             'notes'        => $data['notes'] ?? null,
             'status'       => 'pending',
+            'source'       => $user->role === 'patient' ? 'online' : 'walkin',
         ]);
 
         $appointment->load('patient:id,name,email');

@@ -61,6 +61,14 @@ const adminNavItems = [
     },
 ];
 
+/** Nav shown to doctors */
+const doctorNavItems = [
+    { label: 'Dashboard',    href: '/dashboard',    icon: DASHBOARD_ICON },
+    { label: 'Appointments', href: '/appointments', icon: <CalendarDaysIcon className="w-5 h-5" /> },
+    { label: 'Patients',     href: '/patients',     icon: <HeartIcon className="w-5 h-5" /> },
+    { label: 'My Profile',   href: '/profile',      icon: <UserIcon className="w-5 h-5" /> },
+];
+
 export default function Layout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -69,10 +77,26 @@ export default function Layout({ children }) {
     const userInitial = authUser?.name?.[0]?.toUpperCase() ?? 'U';
     const role = authUser?.role;
     const isAdmin = role === 'admin' || role === 'super_admin';
-    const isStaff = role === 'admin' || role === 'super_admin' || role === 'appointment_setter';
-    const navItems = isStaff ? adminNavItems : clientNavItems;
-    const roleBadge = isAdmin ? 'Admin' : (role === 'appointment_setter' ? 'Appointment Setter' : 'Patient');
-    const roleBadgeColor = isAdmin ? 'bg-blue-500/20 text-blue-200' : (role === 'appointment_setter' ? 'bg-purple-500/20 text-purple-200' : 'bg-emerald-500/20 text-emerald-200');
+    const isDoctor = role === 'doctor';
+    const isStaff = isAdmin || role === 'appointment_setter';
+    const navItems = isStaff ? adminNavItems : (isDoctor ? doctorNavItems : clientNavItems);
+
+    const ROLE_LABELS = {
+        super_admin:         'Super Admin',
+        admin:               'Admin',
+        appointment_setter:  'Appointment Setter',
+        doctor:              'Doctor',
+        patient:             'Patient',
+    };
+    const ROLE_COLORS = {
+        super_admin:         'bg-red-500/20 text-red-200',
+        admin:               'bg-blue-500/20 text-blue-200',
+        appointment_setter:  'bg-purple-500/20 text-purple-200',
+        doctor:              'bg-teal-500/20 text-teal-200',
+        patient:             'bg-emerald-500/20 text-emerald-200',
+    };
+    const roleBadge      = ROLE_LABELS[role] ?? role;
+    const roleBadgeColor = ROLE_COLORS[role] ?? 'bg-gray-500/20 text-gray-200';
 
     const normalize = (u = '') => u.replace(/\/+$/, '');
     const isActive = (href) => normalize(url) === normalize(href);

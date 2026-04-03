@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class DoctorController extends Controller
@@ -45,7 +48,8 @@ class DoctorController extends Controller
         $data = $request->validate([
             'name'           => 'required|string|max:255',
             'specialty'      => 'required|string|max:255',
-            'email'          => 'nullable|email|unique:doctors,email',
+            'email'          => 'required|email|unique:doctors,email|unique:users,email',
+            'password'       => 'required|string|min:8',
             'phone'          => 'nullable|string|max:50',
             'bio'            => 'nullable|string|max:2000',
             'photo'          => 'nullable|file|image|max:10240',
@@ -61,7 +65,20 @@ class DoctorController extends Controller
             $data['photo'] = Storage::url($path);
         }
 
-        $doctor = Doctor::create($data);
+        $doctor = DB::transaction(function () use ($data) {
+            // Create the user account for this doctor
+            $user = User::create([
+                'name'     => $data['name'],
+                'email'    => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role'     => 'doctor',
+            ]);
+
+            return Doctor::create(array_merge(
+                collect($data)->except('password')->toArray(),
+                ['user_id' => $user->id]
+            ));
+        });
 
         return response()->json(['data' => $doctor], 201);
     }
@@ -87,7 +104,8 @@ class DoctorController extends Controller
         $data = $request->validate([
             'name'           => 'sometimes|required|string|max:255',
             'specialty'      => 'sometimes|required|string|max:255',
-            'email'          => 'nullable|email|unique:doctors,email,' . $id,
+            'email'          => 'nullable|email|unique:doctors,email,' . $id . '|unique:users,email,' . ($doctor->user_id ?? 'NULL') . ',id',
+            'password'       => 'nullable|string|min:8',
             'phone'          => 'nullable|string|max:50',
             'bio'            => 'nullable|string|max:2000',
             'photo'          => 'nullable|file|image|max:10240',
@@ -107,9 +125,20 @@ class DoctorController extends Controller
             $data['photo'] = Storage::url($path);
         }
 
-        $doctor->update($data);
+        DB::transaction(function () use ($data, $doctor) {
+            $doctor->update(collect($data)->except('password')->toArray());
 
-        return response()->json(['data' => $doctor]);
+            // Sync the linked user account if it exists
+            if ($doctor->user) {
+                $userUpdate = [];
+                if (isset($data['name']))     $userUpdate['name']     = $data['name'];
+                if (!empty($data['email']))   $userUpdate['email']    = $data['email'];
+                if (!empty($data['password'])) $userUpdate['password'] = Hash::make($data['password']);
+                if ($userUpdate) $doctor->user->update($userUpdate);
+            }
+        });
+
+        return response()->json(['data' => $doctor->fresh()]);
     }
 
     // -----------------------------------------------------------------------
@@ -120,7 +149,14 @@ class DoctorController extends Controller
         $this->requireSuperAdmin($request);
 
         $doctor = Doctor::findOrFail($id);
-        $doctor->delete();
+
+        DB::transaction(function () use ($doctor) {
+            // Remove the linked user account (cascades session etc. via nullOnDelete on doctors.user_id)
+            if ($doctor->user) {
+                $doctor->user->delete();
+            }
+            $doctor->delete();
+        });
 
         return response()->json(['message' => 'Deleted']);
     }

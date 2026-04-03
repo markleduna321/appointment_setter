@@ -29,10 +29,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+
+        // Attach the doctor profile so the frontend knows the doctor's id
+        if ($user && $user->role === 'doctor') {
+            $user->loadMissing('doctor:id,name,specialty,user_id');
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
         ];
     }

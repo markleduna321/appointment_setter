@@ -9,6 +9,7 @@ import PatientModalSection from './_sections/patient-modal-section';
 import PatientProfileDrawer from './_sections/patient-profile-drawer';
 import CheckupRecordModal from './_sections/checkup-record-modal';
 import { fetchPatientsThunk } from './_redux/patient-thunk';
+import AppointmentModalSection from '../appointments/_sections/appointment-modal-section';
 
 export default function PatientsPage() {
 	const dispatch = useDispatch();
@@ -31,6 +32,7 @@ export default function PatientsPage() {
 			{isAdmin && <PatientModalSection />}
 			<PatientProfileDrawer />
 			<CheckupRecordModal patientId={drawerPatient?.id} />
+			{isAdmin && <AppointmentModalSection />}
 		</Layout>
 	);
 }

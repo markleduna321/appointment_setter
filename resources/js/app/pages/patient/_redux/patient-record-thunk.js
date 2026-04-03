@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { fetchPatientsThunk } from './patient-thunk';
 import {
     get_patient_records_service,
     get_latest_patient_record_service,
@@ -49,6 +50,7 @@ export const createPatientRecordThunk = createAsyncThunk(
         try {
             const record = await create_patient_record_service(patientId, data);
             dispatch(fetchPatientRecordsThunk(patientId));
+            dispatch(fetchPatientsThunk());
             return record;
         } catch (err) {
             const laravelErrors = err.response?.data?.errors;
@@ -67,6 +69,7 @@ export const updatePatientRecordThunk = createAsyncThunk(
         try {
             const record = await update_patient_record_service(patientId, recordId, data);
             dispatch(fetchPatientRecordsThunk(patientId));
+            dispatch(fetchPatientsThunk());
             return record;
         } catch (err) {
             const laravelErrors = err.response?.data?.errors;

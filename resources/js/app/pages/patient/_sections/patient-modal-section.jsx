@@ -6,6 +6,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const EMPTY_FORM = {
     name: '',
+    source: 'walkin',
     email: '',
     phone: '',
     dob: '',
@@ -23,11 +24,12 @@ export default function PatientModalSection() {
         if (modalOpen) {
             setForm(isEditing
                 ? {
-                    name: selectedPatient.name ?? '',
-                    email: selectedPatient.email ?? '',
-                    phone: selectedPatient.phone ?? '',
-                    dob: selectedPatient.dob ?? '',
-                    notes: selectedPatient.notes ?? '',
+                    name:   selectedPatient.name ?? '',
+                    source: selectedPatient.source ?? 'walkin',
+                    email:  selectedPatient.email ?? '',
+                    phone:  selectedPatient.phone ?? '',
+                    dob:    selectedPatient.dob ?? '',
+                    notes:  selectedPatient.notes ?? '',
                 }
                 : EMPTY_FORM
             );
@@ -37,6 +39,7 @@ export default function PatientModalSection() {
     if (!modalOpen) return null;
 
     const set = (key, val) => setForm((p) => ({ ...p, [key]: val }));
+    const isWalkin = form.source === 'walkin';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -72,6 +75,32 @@ export default function PatientModalSection() {
                         </div>
                     )}
 
+                    {/* Walk-in / Online toggle */}
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200">
+                        <div>
+                            <p className="text-xs font-semibold text-gray-700">Patient Type</p>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                                {isWalkin ? 'Walk-in — no online account required' : 'Online — requires email for app access'}
+                            </p>
+                        </div>
+                        <div className="flex rounded-lg overflow-hidden border border-gray-200 text-xs font-semibold flex-shrink-0">
+                            <button
+                                type="button"
+                                onClick={() => set('source', 'walkin')}
+                                className={`px-3 py-1.5 transition-colors ${isWalkin ? 'bg-orange-500 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                            >
+                                Walk-in
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => set('source', 'online')}
+                                className={`px-3 py-1.5 transition-colors ${!isWalkin ? 'bg-blue-600 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                            >
+                                Online
+                            </button>
+                        </div>
+                    </div>
+
                     <div>
                         <label className="block text-xs font-semibold text-gray-600 mb-1">Name <span className="text-red-400">*</span></label>
                         <input
@@ -86,13 +115,17 @@ export default function PatientModalSection() {
 
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-xs font-semibold text-gray-600 mb-1">Email</label>
+                            <label className="block text-xs font-semibold text-gray-600 mb-1">
+                                Email{!isWalkin && <span className="text-red-400 ml-0.5">*</span>}
+                                {isWalkin && <span className="text-gray-400 font-normal ml-1">(optional)</span>}
+                            </label>
                             <input
                                 type="email"
                                 value={form.email}
                                 onChange={(e) => set('email', e.target.value)}
-                                placeholder="patient@example.com"
-                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400 transition"
+                                required={!isWalkin}
+                                placeholder={isWalkin ? 'If available' : 'patient@example.com'}
+                                className={`w-full px-3 py-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/30 focus:border-green-400 transition ${isWalkin ? 'border-gray-100 bg-gray-50 text-gray-400' : 'border-gray-200'}`}
                             />
                         </div>
                         <div>

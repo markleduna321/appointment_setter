@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\Doctor;
 use App\Models\PatientRecord;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,12 +22,49 @@ class PatientRecordController extends Controller
     }
 
     /**
+     * For doctor-role requests, ensure they have a treatment relationship
+     * with the patient (appointment or existing record) before granting access.
+     * Admin and appointment_setter roles cannot view patient medical records.
+     */
+    private function authorizeAccess(int $patientId): void
+    {
+        $auth = request()->user();
+
+        // Admin and appointment_setter cannot access medical records
+        if (in_array($auth->role, ['admin', 'appointment_setter'])) {
+            abort(403, 'You do not have permission to view patient records.');
+        }
+
+        // Doctors need a treatment relationship with the patient
+        if ($auth->role === 'doctor') {
+            $doctorProfile = Doctor::where('user_id', $auth->id)->first();
+            if (! $doctorProfile) {
+                abort(403, 'Doctor profile not found.');
+            }
+
+            $hasAppointment = Appointment::where('user_id', $patientId)
+                ->where('doctor_name', $doctorProfile->name)
+                ->exists();
+
+            $hasRecord = PatientRecord::where('patient_id', $patientId)
+                ->where('doctor_id', $doctorProfile->id)
+                ->exists();
+
+            if (! $hasAppointment && ! $hasRecord) {
+                abort(403, 'You do not have a treatment relationship with this patient.');
+            }
+        }
+        // super_admin passes through unrestricted
+    }
+
+    /**
      * GET /api/patients/{patientId}/records
      * List all checkup records for a patient (summary, no nested relations).
      */
     public function index(int $patientId)
     {
         $this->resolvePatient($patientId);
+        $this->authorizeAccess($patientId);
 
         $records = PatientRecord::with(['doctor:id,name,specialty'])
             ->where('patient_id', $patientId)
@@ -43,6 +81,7 @@ class PatientRecordController extends Controller
     public function latest(int $patientId)
     {
         $this->resolvePatient($patientId);
+        $this->authorizeAccess($patientId);
 
         $record = PatientRecord::with([
                 'doctor:id,name,specialty',
@@ -68,6 +107,7 @@ class PatientRecordController extends Controller
     public function show(int $patientId, int $id)
     {
         $this->resolvePatient($patientId);
+        $this->authorizeAccess($patientId);
 
         $record = PatientRecord::with([
                 'doctor:id,name,specialty',
@@ -88,7 +128,7 @@ class PatientRecordController extends Controller
      */
     public function store(Request $request, int $patientId)
     {
-        $this->resolvePatient($patientId);
+        $patient = $this->resolvePatient($patientId);
 
         $data = $request->validate([
             'visited_at'          => 'required|date',
@@ -132,13 +172,23 @@ class PatientRecordController extends Controller
             'followup.service'        => 'nullable|string|max:255',
             'followup.doctor_name'    => 'nullable|string|max:255',
             'followup.notes'          => 'nullable|string|max:500',
+
+            // Optional: complete an upcoming appointment for this patient (walk-in scenario)
+            'complete_appointment_id' => 'nullable|integer|exists:appointments,id',
         ]);
 
-        $record = DB::transaction(function () use ($data, $patientId, $request) {
+        $record = DB::transaction(function () use ($data, $patientId, $patient, $request) {
+            // If the requester is a doctor, always use their own doctor profile
+            $doctorId = $data['doctor_id'] ?? null;
+            if ($request->user()->role === 'doctor') {
+                $dp = Doctor::where('user_id', $request->user()->id)->first();
+                $doctorId = $dp?->id;
+            }
+
             $record = PatientRecord::create([
                 'patient_id'        => $patientId,
                 'appointment_id'    => $data['appointment_id'] ?? null,
-                'doctor_id'         => $data['doctor_id'] ?? null,
+                'doctor_id'         => $doctorId,
                 'visited_at'        => $data['visited_at'],
                 'chief_complaint'   => $data['chief_complaint'] ?? null,
                 'diagnosis'         => $data['diagnosis'] ?? null,
@@ -162,19 +212,34 @@ class PatientRecordController extends Controller
                 $record->testResults()->createMany($data['test_results']);
             }
 
-            // Mark any same-day appointment for this patient as completed
+            // Mark the relevant same-day appointment as completed
             $visitDate = \Carbon\Carbon::parse($data['visited_at'])->toDateString();
-            Appointment::where('user_id', $patientId)
-                ->whereDate('date', $visitDate)
-                ->whereIn('status', ['pending', 'confirmed'])
-                ->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
+            if (! empty($data['appointment_id'])) {
+                // Explicit link — complete by ID regardless of user_id (handles manual/unlinked appointments)
+                Appointment::whereKey($data['appointment_id'])
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
+            } else {
+                // Fallback: match by patient user_id or patient_name
+                $apptQuery = Appointment::whereDate('date', $visitDate)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->where(function ($q) use ($patientId, $patient) {
+                        $q->where('user_id', $patientId)
+                          ->orWhere('patient_name', $patient->name);
+                    });
+                if ($request->user()->role === 'doctor' && isset($dp)) {
+                    $apptQuery->where('doctor_name', $dp->name);
+                }
+                $apptQuery->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
+            }
 
             // Create follow-up appointment if requested
             if (! empty($data['followup']['date'])) {
                 $fu = $data['followup'];
                 Appointment::create([
-                    'user_id'     => $patientId,
-                    'service'     => $fu['service'] ?? 'Follow-up Checkup',
+                    'user_id'      => $patientId,
+                    'patient_name' => $patient->name,
+                    'service'      => $fu['service'] ?? 'Follow-up Checkup',
                     'doctor_name' => $fu['doctor_name'] ?? '',
                     'date'        => $fu['date'],
                     'time'        => $fu['time'] ?? '09:00:00',
@@ -182,6 +247,13 @@ class PatientRecordController extends Controller
                     'status'      => 'confirmed',
                     'updated_by'  => $request->user()->id,
                 ]);
+            }
+
+            // Complete an upcoming appointment if the patient walked in (no same-day appointment)
+            if (! empty($data['complete_appointment_id'])) {
+                Appointment::whereKey($data['complete_appointment_id'])
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
             }
 
             return $record;
@@ -198,7 +270,7 @@ class PatientRecordController extends Controller
      */
     public function update(Request $request, int $patientId, int $id)
     {
-        $this->resolvePatient($patientId);
+        $patient = $this->resolvePatient($patientId);
 
         $record = PatientRecord::where('patient_id', $patientId)->findOrFail($id);
 
@@ -239,7 +311,7 @@ class PatientRecordController extends Controller
             'test_results.*.conducted_at'   => 'nullable|date',
         ]);
 
-        DB::transaction(function () use ($data, $record, $patientId, $request) {
+        DB::transaction(function () use ($data, $record, $patientId, $patient, $request) {
             $record->update(array_filter([
                 'visited_at'        => $data['visited_at'] ?? null,
                 'appointment_id'    => array_key_exists('appointment_id', $data) ? $data['appointment_id'] : $record->appointment_id,
@@ -274,12 +346,30 @@ class PatientRecordController extends Controller
                 }
             }
 
-            // Mark any same-day appointment for this patient as completed
+            // Mark the relevant same-day appointment as completed
             $visitDate = \Carbon\Carbon::parse($data['visited_at'] ?? $record->visited_at)->toDateString();
-            Appointment::where('user_id', $patientId)
-                ->whereDate('date', $visitDate)
-                ->whereIn('status', ['pending', 'confirmed'])
-                ->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
+            $linkedApptId = array_key_exists('appointment_id', $data) ? $data['appointment_id'] : $record->appointment_id;
+            if ($linkedApptId) {
+                Appointment::whereKey($linkedApptId)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
+            } else {
+                $apptQuery = Appointment::whereDate('date', $visitDate)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->where(function ($q) use ($patientId, $patient) {
+                        $q->where('user_id', $patientId)
+                          ->orWhere('patient_name', $patient->name);
+                    });
+                if ($request->user()->role === 'doctor') {
+                    $dpU = Doctor::where('user_id', $request->user()->id)->first();
+                    if ($dpU) {
+                        $apptQuery->where('doctor_name', $dpU->name);
+                    } else {
+                        $apptQuery->whereRaw('0 = 1');
+                    }
+                }
+                $apptQuery->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
+            }
         });
 
         $record->load(['doctor:id,name,specialty', 'medications', 'labResults', 'testResults', 'creator:id,name']);

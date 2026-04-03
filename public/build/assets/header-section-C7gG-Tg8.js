@@ -1,0 +1,1 @@
+import{j as t}from"./app-C3J8hCkg.js";function s(){return t.jsxs("div",{className:"mb-8 text-center",children:[t.jsx("h1",{className:"text-3xl font-extrabold text-gray-900 tracking-tight",children:"Book an Appointment"}),t.jsx("p",{className:"text-sm text-gray-500 mt-1.5",children:"Fill in the steps below to schedule your clinic visit."})]})}export{s as default};

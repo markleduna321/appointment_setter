@@ -13,6 +13,8 @@ import {
     BeakerIcon,
     TrashIcon,
 } from '@heroicons/react/24/outline';
+import { openModal as openAppointmentModal } from '../../appointments/_redux/appointment-slice';
+import axios from 'axios';
 import { closeDrawer, openRecordModal } from '../_redux/patient-record-slice';
 import { fetchPatientRecordsThunk, fetchPatientRecordThunk, deletePatientRecordThunk } from '../_redux/patient-record-thunk';
 
@@ -194,8 +196,96 @@ function RecordsTab({ patient, isAdmin }) {
     );
 }
 
-function DrawerTabs({ patient, isAdmin }) {
-    const [active, setActive] = useState('records');
+function AppointmentsTab({ patient, isAdmin }) {
+    const dispatch = useDispatch();
+    const [appointments, setAppointments] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+        setLoading(true);
+        axios.get('/api/appointments', { params: { user_id: patient.id, per_page: 50 } })
+            .then((res) => { if (mounted) setAppointments(res.data?.data ?? []); })
+            .catch(() => { if (mounted) setAppointments([]); })
+            .finally(() => { if (mounted) setLoading(false); });
+        return () => { mounted = false; };
+    }, [patient.id]);
+
+    const handleBookAppointment = () => {
+        dispatch(openAppointmentModal({
+            _prefill: { patient_name: patient.name, user_id: patient.id },
+        }));
+    };
+
+    const STATUS_CFG = {
+        pending:   { label: 'Pending',   cls: 'bg-yellow-100 text-yellow-700' },
+        confirmed: { label: 'Confirmed', cls: 'bg-blue-100 text-blue-700'   },
+        completed: { label: 'Completed', cls: 'bg-green-100 text-green-700' },
+        cancelled: { label: 'Cancelled', cls: 'bg-red-100 text-red-500'    },
+    };
+
+    return (
+        <div className="flex flex-col h-full">
+            {isAdmin && (
+                <div className="px-5 pt-4 pb-3 flex-shrink-0">
+                    <button
+                        onClick={handleBookAppointment}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors"
+                    >
+                        <PlusIcon className="w-4 h-4" />
+                        Book Appointment
+                    </button>
+                </div>
+            )}
+            <div className="flex-1 overflow-y-auto px-5 py-2 space-y-2">
+                {loading ? (
+                    [0, 1, 2].map((i) => (
+                        <div key={i} className="animate-pulse border border-gray-100 rounded-xl p-4">
+                            <div className="h-3 bg-gray-200 rounded w-40 mb-2" />
+                            <div className="h-3 bg-gray-100 rounded w-56 mb-1" />
+                            <div className="h-3 bg-gray-100 rounded w-24" />
+                        </div>
+                    ))
+                ) : appointments.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-14 text-center">
+                        <div className="w-14 h-14 rounded-full bg-gray-50 flex items-center justify-center mb-3">
+                            <CalendarDaysIcon className="w-7 h-7 text-gray-300" />
+                        </div>
+                        <p className="text-sm font-semibold text-gray-500">No appointments</p>
+                        {isAdmin && (
+                            <p className="text-xs text-gray-400 mt-1">Click Book Appointment to schedule one</p>
+                        )}
+                    </div>
+                ) : (
+                    appointments.map((a) => {
+                        const cfg = STATUS_CFG[a.status] ?? { label: a.status, cls: 'bg-gray-100 text-gray-500' };
+                        return (
+                            <div key={a.id} className="border border-gray-100 rounded-xl p-3 hover:border-blue-200 hover:bg-blue-50/20 transition-all">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-sm font-semibold text-gray-800 truncate">{a.service}</span>
+                                    <span className={`flex-shrink-0 px-2 py-0.5 text-xs font-semibold rounded-full ${cfg.cls}`}>{cfg.label}</span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    {new Date(a.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                    {a.time ? ` · ${a.time.slice(0, 5)}` : ''}
+                                </p>
+                                <p className="text-xs text-gray-400 mt-0.5">{a.doctor_name}</p>
+                            </div>
+                        );
+                    })
+                )}
+            </div>
+        </div>
+    );
+}
+
+function DrawerTabs({ patient, role }) {
+    const canSeeRecords      = role === 'doctor' || role === 'super_admin';
+    const canSeeAppointments = role !== 'doctor';
+    const canManageRecords   = role === 'doctor' || role === 'super_admin';
+    const canBookAppointment = role === 'admin' || role === 'super_admin' || role === 'appointment_setter';
+
+    const [active, setActive] = useState(role === 'doctor' ? 'records' : 'profile');
 
     return (
         <div className="flex flex-col flex-1 min-h-0">
@@ -212,23 +302,41 @@ function DrawerTabs({ patient, isAdmin }) {
                     <UserIcon className="w-4 h-4" />
                     Profile
                 </button>
-                <button
-                    onClick={() => setActive('records')}
-                    className={[
-                        'flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors',
-                        active === 'records'
-                            ? 'border-green-500 text-green-600'
-                            : 'border-transparent text-gray-500 hover:text-gray-700',
-                    ].join(' ')}
-                >
-                    <BeakerIcon className="w-4 h-4" />
-                    Medical Records
-                </button>
+                {canSeeRecords && (
+                    <button
+                        onClick={() => setActive('records')}
+                        className={[
+                            'flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors',
+                            active === 'records'
+                                ? 'border-green-500 text-green-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700',
+                        ].join(' ')}
+                    >
+                        <BeakerIcon className="w-4 h-4" />
+                        Medical Records
+                    </button>
+                )}
+                {canSeeAppointments && (
+                    <button
+                        onClick={() => setActive('appointments')}
+                        className={[
+                            'flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors',
+                            active === 'appointments'
+                                ? 'border-blue-500 text-blue-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700',
+                        ].join(' ')}
+                    >
+                        <CalendarDaysIcon className="w-4 h-4" />
+                        Appointments
+                    </button>
+                )}
             </div>
             <div className="flex-1 min-h-0 overflow-hidden">
                 {active === 'profile'
                     ? <ProfileTab patient={patient} />
-                    : <RecordsTab patient={patient} isAdmin={isAdmin} />
+                    : active === 'appointments'
+                        ? <AppointmentsTab patient={patient} isAdmin={canBookAppointment} />
+                        : <RecordsTab patient={patient} isAdmin={canManageRecords} />
                 }
             </div>
         </div>
@@ -240,12 +348,14 @@ export default function PatientProfileDrawer() {
     const { auth } = usePage().props;
     const role = auth && auth.user && auth.user.role;
     const isAdmin = role === 'admin' || role === 'super_admin';
+    const canManageRecords = isAdmin || role === 'doctor';
 
     const drawerOpen    = useSelector((s) => s.patientRecords.drawerOpen);
     const drawerPatient = useSelector((s) => s.patientRecords.drawerPatient);
 
     useEffect(() => {
-        if (drawerOpen && drawerPatient && drawerPatient.id) {
+        const canSeeRecords = role === 'doctor' || role === 'super_admin';
+        if (drawerOpen && drawerPatient && drawerPatient.id && canSeeRecords) {
             dispatch(fetchPatientRecordsThunk(drawerPatient.id));
         }
     }, [drawerOpen, drawerPatient && drawerPatient.id]);
@@ -281,7 +391,7 @@ export default function PatientProfileDrawer() {
                         </span>
                     </div>
                 </div>
-                <DrawerTabs patient={drawerPatient} isAdmin={isAdmin} />
+                <DrawerTabs patient={drawerPatient} role={role} />
             </div>
         </>
     );

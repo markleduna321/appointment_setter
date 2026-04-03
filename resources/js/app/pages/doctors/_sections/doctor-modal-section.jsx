@@ -41,6 +41,8 @@ const EMPTY_FORM = {
     name: '',
     specialty: '',
     email: '',
+    password: '',
+    password_confirmation: '',
     phone: '',
     bio: '',
     status: 'available',
@@ -66,6 +68,8 @@ export default function DoctorModalSection() {
                     name: selectedDoctor.name ?? '',
                     specialty: selectedDoctor.specialty ?? '',
                     email: selectedDoctor.email ?? '',
+                    password: '',
+                    password_confirmation: '',
                     phone: selectedDoctor.phone ?? '',
                     bio: selectedDoctor.bio ?? '',
                     status: selectedDoctor.status ?? 'available',
@@ -93,10 +97,16 @@ export default function DoctorModalSection() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let data = form;
+        // Strip empty password fields so the backend doesn't try to update them
+        const cleanForm = { ...form };
+        if (!cleanForm.password) {
+            delete cleanForm.password;
+            delete cleanForm.password_confirmation;
+        }
+        let data = cleanForm;
         if (photoFile) {
             const fd = new FormData();
-            Object.entries(form).forEach(([k, v]) => {
+            Object.entries(cleanForm).forEach(([k, v]) => {
                 if (Array.isArray(v)) {
                     v.forEach((item) => fd.append(`${k}[]`, item));
                 } else {
@@ -167,11 +177,12 @@ export default function DoctorModalSection() {
                     {/* Email + Phone */}
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="block text-xs font-semibold text-gray-600 mb-1">Email</label>
+                            <label className="block text-xs font-semibold text-gray-600 mb-1">Email <span className="text-red-400">*</span></label>
                             <input
                                 type="email"
                                 value={form.email}
                                 onChange={(e) => set('email', e.target.value)}
+                                required
                                 placeholder="doctor@clinic.com"
                                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition"
                             />
@@ -183,6 +194,37 @@ export default function DoctorModalSection() {
                                 value={form.phone}
                                 onChange={(e) => set('phone', e.target.value)}
                                 placeholder="+63 9XX XXX XXXX"
+                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Password */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-600 mb-1">
+                                Password {!isEditing && <span className="text-red-400">*</span>}
+                                {isEditing && <span className="text-gray-400 font-normal ml-1">(leave blank to keep)</span>}
+                            </label>
+                            <input
+                                type="password"
+                                value={form.password}
+                                onChange={(e) => set('password', e.target.value)}
+                                required={!isEditing}
+                                placeholder={isEditing ? '••••••••' : 'Min. 8 characters'}
+                                autoComplete="new-password"
+                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-600 mb-1">Confirm Password</label>
+                            <input
+                                type="password"
+                                value={form.password_confirmation}
+                                onChange={(e) => set('password_confirmation', e.target.value)}
+                                required={!isEditing && !!form.password}
+                                placeholder="Repeat password"
+                                autoComplete="new-password"
                                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition"
                             />
                         </div>

@@ -10,6 +10,7 @@ class Doctor extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'specialty',
         'email',
@@ -27,8 +28,14 @@ class Doctor extends Model
     ];
 
     // -------------------------------------------------------------------------
-    // Relationships (extend once appointments stores doctor_id FK)
+    // Relationships
     // -------------------------------------------------------------------------
+
+    /** The user account linked to this doctor. */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     public function appointments()
     {

@@ -18,6 +18,7 @@ class Appointment extends Model
         'time',
         'notes',
         'status',
+        'source',
         'updated_by',
     ];
 

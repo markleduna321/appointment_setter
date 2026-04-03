@@ -350,6 +350,7 @@ function buildInitialForm(record) {
         followup_service: '',
         followup_doctor:  '',
         followup_notes:   '',
+        complete_upcoming: false,
     };
     if (!record) {
         const now = new Date();
@@ -357,6 +358,7 @@ function buildInitialForm(record) {
         const pad = (n) => String(n).padStart(2, '0');
         const localDt = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
         return {
+            appointment_id: '',
             visited_at: localDt,
             doctor_id: '',
             chief_complaint: '',
@@ -378,6 +380,7 @@ function buildInitialForm(record) {
         ? record.visited_at.replace(' ', 'T').slice(0, 16)
         : '';
     return {
+        appointment_id:    record.appointment_id ?? '',
         visited_at:        dt,
         doctor_id:         record.doctor_id ?? '',
         chief_complaint:   record.chief_complaint ?? '',
@@ -452,10 +455,35 @@ function FormInput({ label, type = 'text', value, onChange, required, placeholde
 
 function RecordForm({ patientId, mode, record, onCancel }) {
     const dispatch = useDispatch();
-    const { submitting, formError } = useSelector((s) => s.patientRecords);
-    const [form, setForm] = useState(() => buildInitialForm(record));
+    const { auth } = usePage().props;
+    const isDoctor = auth?.user?.role === 'doctor';
+    const myDoctorId = isDoctor ? (auth?.user?.doctor?.id ?? null) : null;
+    const myDoctorName = isDoctor ? (auth?.user?.doctor?.name ?? '') : '';
+    const { submitting, formError, drawerPatient } = useSelector((s) => s.patientRecords);
 
-    useEffect(() => { setForm(buildInitialForm(record)); }, [record]);
+    const getInitialForm = (r) => {
+        const f = buildInitialForm(r);
+        if (!r) {
+            // Doctor role: pre-fill doctor_id and default follow-up doctor to themselves
+            if (isDoctor && myDoctorId) {
+                f.doctor_id = String(myDoctorId);
+                f.followup_doctor = myDoctorName;
+            }
+            // Auto-link today's appointment for all roles
+            const ta = drawerPatient?.today_appointment;
+            if (ta && ['pending', 'confirmed'].includes(ta.status)) {
+                // For doctor role, only link their own appointment; admins link whatever is today's
+                if (!isDoctor || ta.doctor_name === myDoctorName) {
+                    f.appointment_id = ta.id;
+                }
+            }
+        }
+        return f;
+    };
+
+    const [form, setForm] = useState(() => getInitialForm(record));
+
+    useEffect(() => { setForm(getInitialForm(record)); }, [record]);
 
     const set = (key, val) => setForm((p) => ({ ...p, [key]: val }));
 
@@ -475,8 +503,9 @@ function RecordForm({ patientId, mode, record, onCancel }) {
         // Build clean payload — strip empty strings to null
         const clean = (v) => (v === '' || v === undefined) ? null : v;
         const payload = {
-            visited_at:        clean(form.visited_at),
-            doctor_id:         clean(form.doctor_id) ? Number(form.doctor_id) : null,
+            visited_at:               clean(form.visited_at),
+            appointment_id:           form.appointment_id ? Number(form.appointment_id) : null,
+            doctor_id:                clean(form.doctor_id) ? Number(form.doctor_id) : null,
             chief_complaint:   clean(form.chief_complaint),
             diagnosis:         clean(form.diagnosis),
             notes:             clean(form.notes),
@@ -506,6 +535,9 @@ function RecordForm({ patientId, mode, record, onCancel }) {
                 doctor_name: clean(form.followup_doctor),
                 notes:       clean(form.followup_notes),
             } : null,
+            complete_appointment_id: (mode === 'add' && form.complete_upcoming && drawerPatient?.upcoming_appointment?.id)
+                ? drawerPatient.upcoming_appointment.id
+                : null,
         };
 
         const action = mode === 'edit'
@@ -530,7 +562,16 @@ function RecordForm({ patientId, mode, record, onCancel }) {
                     <FormInput label="Visit Date & Time" type="datetime-local" value={form.visited_at} onChange={(v) => set('visited_at', v)} required />
                 </div>
                 <div className="col-span-2 sm:col-span-1">
-                    <FormInput label="Doctor ID" type="number" value={form.doctor_id} onChange={(v) => set('doctor_id', v)} placeholder="optional" />
+                    {isDoctor ? (
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-600 mb-1">Doctor</label>
+                            <div className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
+                                {myDoctorName || 'You'}
+                            </div>
+                        </div>
+                    ) : (
+                        <FormInput label="Doctor ID" type="number" value={form.doctor_id} onChange={(v) => set('doctor_id', v)} placeholder="optional" />
+                    )}
                 </div>
             </div>
 
@@ -657,6 +698,35 @@ function RecordForm({ patientId, mode, record, onCancel }) {
                 )}
             />
 
+            {/* Walk-in notice: upcoming appointment exists but no same-day appointment */}
+            {mode === 'add' && drawerPatient?.upcoming_appointment && !form.appointment_id && (
+                <div className="flex items-start gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+                    <CalendarDaysIcon className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-amber-800">
+                            Upcoming appointment on{' '}
+                            {new Date(drawerPatient.upcoming_appointment.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </p>
+                        <p className="text-xs text-amber-600 mt-0.5">
+                            {drawerPatient.upcoming_appointment.service}
+                            {drawerPatient.upcoming_appointment.doctor_name ? ` · ${drawerPatient.upcoming_appointment.doctor_name}` : ''}
+                            {' · '}<span className="capitalize">{drawerPatient.upcoming_appointment.status}</span>
+                        </p>
+                        <label className="flex items-center gap-2 mt-2 cursor-pointer select-none">
+                            <input
+                                type="checkbox"
+                                checked={form.complete_upcoming}
+                                onChange={(e) => set('complete_upcoming', e.target.checked)}
+                                className="w-3.5 h-3.5 rounded accent-amber-500"
+                            />
+                            <span className="text-xs font-medium text-amber-800">
+                                Mark this appointment as completed (patient walked in)
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            )}
+
             {/* Follow-up Appointment (add mode only) */}
             {mode === 'add' && (
                 <div className="border border-gray-200 rounded-xl overflow-hidden">
@@ -749,6 +819,7 @@ export default function CheckupRecordModal({ patientId }) {
     const { auth } = usePage().props;
     const role = auth?.user?.role;
     const isAdmin = role === 'admin' || role === 'super_admin';
+    const canManageRecords = isAdmin || role === 'doctor';
     const { recordModalOpen, recordModalMode, selectedRecord, loadingRecord, drawerPatient } = useSelector((s) => s.patientRecords);
 
     if (!recordModalOpen) return null;
@@ -789,7 +860,7 @@ export default function CheckupRecordModal({ patientId }) {
                     ) : recordModalMode === 'view' ? (
                         <ViewRecord
                             record={selectedRecord}
-                            isAdmin={isAdmin}
+                            isAdmin={canManageRecords}
                             onEdit={switchToEdit}
                             patient={drawerPatient}
                         />

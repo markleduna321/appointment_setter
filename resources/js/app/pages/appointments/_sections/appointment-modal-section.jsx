@@ -24,16 +24,21 @@ export default function AppointmentModalSection() {
 
     const [form, setForm]         = useState(EMPTY_FORM);
     const [formErrors, setFormErrors] = useState({});
+    const [prefillUserId, setPrefillUserId] = useState(null);
     const [services, setServices] = useState([]);
     const [servicesLoading, setServicesLoading] = useState(false);
     const [doctors, setDoctors] = useState([]);
     const [doctorsLoading, setDoctorsLoading] = useState(false);
     const [bookedSlots, setBookedSlots] = useState([]);
     const [slotsLoading, setSlotsLoading] = useState(false);
-    const isEditing               = !!selectedAppointment;
+    const isEditing               = !!(selectedAppointment && !selectedAppointment._prefill);
 
     useEffect(() => {
-        if (selectedAppointment) {
+        if (selectedAppointment?._prefill) {
+            // Pre-fill from patient profile "Book Appointment" button
+            setForm({ ...EMPTY_FORM, patient_name: selectedAppointment._prefill.patient_name ?? '' });
+            setPrefillUserId(selectedAppointment._prefill.user_id ?? null);
+        } else if (selectedAppointment) {
             setForm({
                 patient_name: selectedAppointment.patient_name ?? '',
                 doctor_name:  selectedAppointment.doctor_name  ?? '',
@@ -44,8 +49,10 @@ export default function AppointmentModalSection() {
                 status:       selectedAppointment.status       ?? 'pending',
                 notes:        selectedAppointment.notes        ?? '',
             });
+            setPrefillUserId(null);
         } else {
             setForm(EMPTY_FORM);
+            setPrefillUserId(null);
         }
         setFormErrors({});
     }, [selectedAppointment, modalOpen]);
@@ -187,7 +194,8 @@ export default function AppointmentModalSection() {
         if (isEditing) {
             dispatch(updateAppointmentThunk({ id: selectedAppointment.id, data: form }));
         } else {
-            dispatch(createAppointmentThunk(form));
+            const payload = prefillUserId ? { ...form, user_id: prefillUserId } : form;
+            dispatch(createAppointmentThunk(payload));
         }
     };
 
@@ -233,9 +241,10 @@ export default function AppointmentModalSection() {
                         <input
                             type="text"
                             value={form.patient_name}
-                            onChange={(e) => field('patient_name', e.target.value)}
+                            onChange={(e) => !prefillUserId && field('patient_name', e.target.value)}
+                            readOnly={!!prefillUserId}
                             placeholder="Full name"
-                            className={INPUT_CLASS}
+                            className={prefillUserId ? `${INPUT_CLASS} bg-gray-100 cursor-not-allowed` : INPUT_CLASS}
                         />
                         {formErrors.patient_name && (
                             <p className="text-xs text-red-500 mt-0.5">{formErrors.patient_name}</p>

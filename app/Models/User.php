@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'source',
     ];
 
     /**
@@ -61,6 +62,18 @@ class User extends Authenticatable
     public function appointments()
     {
         return $this->hasMany(\App\Models\Appointment::class, 'user_id');
+    }
+
+    /** The doctor profile linked to this user (when role = doctor). */
+    public function doctor()
+    {
+        return $this->hasOne(\App\Models\Doctor::class, 'user_id');
+    }
+
+    /** All patient records for this user (when role = patient). */
+    public function patientRecords()
+    {
+        return $this->hasMany(\App\Models\PatientRecord::class, 'patient_id');
     }
 
     /** The one mobile record for this user. */

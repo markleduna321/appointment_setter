@@ -28,7 +28,7 @@ function printPrescription(record, patient) {
         ? new Date(record.visited_at).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' })
         : '';
     const patientName = patient?.name ?? 'Unknown Patient';
-    const appName = import.meta.env.VITE_APP_NAME || 'MediBook';
+    const appName = import.meta.env.VITE_APP_NAME || 'AppointDoc';
 
     const medRows = meds.map((m, i) => `
         <div class="med-item">

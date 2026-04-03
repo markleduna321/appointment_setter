@@ -87,7 +87,7 @@ export default function FeaturesSection() {
                             Everything You Need for Seamless Healthcare
                         </h2>
                         <p className="text-gray-500 mb-10 leading-relaxed">
-                            MediBook combines powerful tools and a clean interface to make healthcare
+                            AppointDoc combines powerful tools and a clean interface to make healthcare
                             access simple, fast, and stress-free for patients and doctors alike.
                         </p>
 

@@ -7,7 +7,7 @@ const testimonials = [
         role: 'Marketing Manager',
         avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80',
         rating: 5,
-        text: "Booking an appointment used to take hours on hold. With MediBook I had a confirmed slot with my cardiologist in under 2 minutes. Absolutely game-changing!",
+        text: "Booking an appointment used to take hours on hold. With AppointDoc I had a confirmed slot with my cardiologist in under 2 minutes. Absolutely game-changing!",
         tag: 'Cardiology',
     },
     {
@@ -71,7 +71,7 @@ export default function TestimonialsSection() {
                     </h2>
                     <p className="text-blue-100 max-w-xl mx-auto">
                         Real stories from real patients who transformed how they manage
-                        their healthcare with MediBook.
+                        their healthcare with AppointDoc.
                     </p>
                 </div>
 

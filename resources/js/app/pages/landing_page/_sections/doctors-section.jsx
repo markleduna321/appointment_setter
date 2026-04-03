@@ -51,7 +51,7 @@ export default function DoctorsSection() {
                         Meet Our Expert Physicians
                     </h2>
                     <p className="text-gray-500 max-w-xl mx-auto">
-                        Every doctor on MediBook is credentialed, experienced, and committed
+                        Every doctor on AppointDoc is credentialed, experienced, and committed
                         to delivering the best patient care possible.
                     </p>
                 </div>

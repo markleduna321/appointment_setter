@@ -32,7 +32,7 @@ export default function HeaderSection() {
                         <CalendarDaysIcon className="w-5 h-5 text-white" />
                     </div>
                     <div className="leading-tight">
-                        <span className="block text-base font-bold text-gray-900 leading-none">MediBook</span>
+                        <span className="block text-base font-bold text-gray-900 leading-none">AppointDoc</span>
                         <span className="block text-[10px] text-blue-600 font-medium tracking-wide">Online Clinic Scheduler</span>
                     </div>
                 </a>

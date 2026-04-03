@@ -128,7 +128,7 @@ export default function Layout({ children }) {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                         </div>
-                            <span className="text-base font-bold tracking-wide">CampanyName</span>
+                            <span className="text-base font-bold tracking-wide">AppointDoc</span>
                     </div>
                     <button
                         onClick={() => setSidebarOpen(false)}

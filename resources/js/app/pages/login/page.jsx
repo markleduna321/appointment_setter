@@ -12,7 +12,7 @@ const FEATURES = [
 ];
 
 const TESTIMONIAL = {
-    quote: "MediBook completely changed how I manage my health appointments. I booked my cardiologist visit during my lunch break!",
+    quote: "AppointDoc completely changed how I manage my health appointments. I booked my cardiologist visit during my lunch break!",
     name: "Maria Santos",
     role: "Patient since 2024",
     avatar: "https://images.unsplash.com/photo-1494790108755-2616b332e234?w=80&q=80",
@@ -29,7 +29,7 @@ export default function LoginPage() {
     });
 
     useEffect(() => {
-        document.title = activeTab === 'login' ? 'Sign In — MediBook' : 'Create Account — MediBook';
+        document.title = activeTab === 'login' ? 'Sign In — AppointDoc' : 'Create Account — AppointDoc';
     }, [activeTab]);
 
     return (
@@ -49,7 +49,7 @@ export default function LoginPage() {
                             <CalendarDaysIcon className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <p className="text-lg font-extrabold text-white leading-none">MediBook</p>
+                            <p className="text-lg font-extrabold text-white leading-none">AppointDoc</p>
                             <p className="text-xs text-blue-300 font-medium tracking-wide">Online Clinic Scheduler</p>
                         </div>
                     </Link>
@@ -117,7 +117,7 @@ export default function LoginPage() {
                         <CalendarDaysIcon className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <p className="text-base font-bold text-gray-900 leading-none">MediBook</p>
+                        <p className="text-base font-bold text-gray-900 leading-none">AppointDoc</p>
                         <p className="text-[10px] text-blue-600 font-medium">Online Clinic Scheduler</p>
                     </div>
                 </div>
@@ -202,7 +202,7 @@ export default function LoginPage() {
                 {/* Back to landing */}
                 <div className="mt-8 text-center">
                     <Link href="/" className="text-xs text-gray-400 hover:text-blue-600 transition-colors">
-                        ← Back to MediBook Home
+                        ← Back to AppointDoc Home
                     </Link>
                 </div>
             </div>

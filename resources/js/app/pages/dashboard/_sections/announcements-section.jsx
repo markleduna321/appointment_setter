@@ -6,7 +6,7 @@ export default function AnnouncementsSection() {
     const list = (announcements && announcements.length > 0) ? announcements : [
         {
             id: 1,
-            title: 'Welcome to MediBook!',
+            title: 'Welcome to AppointDoc!',
             message: 'Your clinic scheduling portal is ready. Book your first appointment today.',
             type: 'info',
             created_at: 'Just now',

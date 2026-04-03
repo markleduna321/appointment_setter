@@ -63,7 +63,7 @@ export default function FooterSection() {
                                 <CalendarDaysIcon className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                                <span className="block text-base font-bold leading-none">MediBook</span>
+                                <span className="block text-base font-bold leading-none">AppointDoc</span>
                                 <span className="block text-[10px] text-blue-400 font-medium tracking-wide">Online Clinic Scheduler</span>
                             </div>
                         </div>
@@ -85,7 +85,7 @@ export default function FooterSection() {
                             </div>
                             <div className="flex items-center gap-2.5 text-sm text-blue-200/70">
                                 <EnvelopeIcon className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                                support@medibook.health
+                                support@appointdoc.health
                             </div>
                         </div>
 
@@ -151,7 +151,7 @@ export default function FooterSection() {
             {/* Bottom Bar */}
             <div className="border-t border-white/10 py-5">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-blue-200/50">
-                    <p>© {new Date().getFullYear()} MediBook Health Systems. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} AppointDoc Health Systems. All rights reserved.</p>
                     <div className="flex gap-4">
                         <a href="#" className="hover:text-white transition-colors">Privacy</a>
                         <a href="#" className="hover:text-white transition-colors">Terms</a>

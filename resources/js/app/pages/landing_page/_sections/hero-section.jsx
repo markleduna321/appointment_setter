@@ -1,5 +1,11 @@
-import { CalendarDaysIcon, ShieldCheckIcon, ClockIcon, StarIcon } from '@heroicons/react/24/solid';
+import { CalendarDaysIcon, ShieldCheckIcon, ClockIcon, StarIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import { ArrowRightIcon, PlayCircleIcon } from '@heroicons/react/24/outline';
+import { router } from '@inertiajs/react';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+import { setBookingField, setSelectedDoctor, goToStep } from '../../book_now/_redux/book-now-slice';
+import { getServiceIcon } from '../../../utils/service-icons';
 
 const badges = [
     { icon: <ShieldCheckIcon className="w-4 h-4 text-blue-600" />, text: 'Verified Doctors' },
@@ -8,6 +14,76 @@ const badges = [
 ];
 
 export default function HeroSection() {
+    const dispatch = useDispatch();
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState({ services: [], doctors: [] });
+    const [open, setOpen] = useState(false);
+    const [searching, setSearching] = useState(false);
+    const debounceRef = useRef(null);
+    const containerRef = useRef(null);
+
+    // Close dropdown on outside click
+    useEffect(() => {
+        const handler = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
+    // Debounced search against public API
+    useEffect(() => {
+        if (!query.trim()) {
+            setResults({ services: [], doctors: [] });
+            setOpen(false);
+            return;
+        }
+        clearTimeout(debounceRef.current);
+        setSearching(true);
+        setOpen(true);
+        debounceRef.current = setTimeout(async () => {
+            try {
+                const [svcRes, docRes] = await Promise.all([
+                    axios.get('/api/services', { params: { search: query, status: 'active' } }),
+                    axios.get('/api/doctors',  { params: { search: query } }),
+                ]);
+                const svcs = (svcRes.data ?? []).slice(0, 5);
+                const docs = (docRes.data?.data ?? []).slice(0, 5);
+                setResults({ services: svcs, doctors: docs });
+            } catch {
+                setResults({ services: [], doctors: [] });
+            } finally {
+                setSearching(false);
+            }
+        }, 300);
+        return () => clearTimeout(debounceRef.current);
+    }, [query]);
+
+    const hasResults = results.services.length > 0 || results.doctors.length > 0;
+
+    const selectService = (svc) => {
+        dispatch(goToStep(1));
+        dispatch(setBookingField({ service: svc.name, service_category: svc.category }));
+        setOpen(false);
+        router.visit('/appointments/new');
+    };
+
+    const selectDoctor = (doc) => {
+        dispatch(setSelectedDoctor(doc));
+        dispatch(setBookingField({ doctor_name: doc.name, service_category: doc.specialty }));
+        dispatch(goToStep(2));
+        setOpen(false);
+        router.visit('/appointments/new');
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setOpen(false);
+        router.visit('/appointments/new');
+    };
+
     return (
         <section
             id="home"
@@ -40,22 +116,102 @@ export default function HeroSection() {
                     </p>
 
                     {/* Quick Book Bar */}
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 bg-white rounded-2xl shadow-lg shadow-blue-100 border border-gray-100 mb-8 max-w-xl">
-                        <div className="flex-1 flex items-center gap-2 px-3">
-                            <CalendarDaysIcon className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                            <input
-                                type="text"
-                                placeholder="Choose a specialty or doctor..."
-                                className="w-full text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0"
-                            />
-                        </div>
-                        <a
-                            href="/login?tab=register"
-                            className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-500 rounded-xl hover:opacity-90 transition-opacity shadow-md shadow-blue-300 whitespace-nowrap"
+                    <div ref={containerRef} className="relative mb-8 max-w-xl">
+                        <form
+                            onSubmit={handleSubmit}
+                            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 bg-white rounded-2xl shadow-lg shadow-blue-100 border border-gray-100"
                         >
-                            Book Now
-                            <ArrowRightIcon className="w-4 h-4" />
-                        </a>
+                            <div className="flex-1 flex items-center gap-2 px-3">
+                                <CalendarDaysIcon className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                                <input
+                                    type="text"
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    placeholder="Choose a specialty or doctor..."
+                                    className="w-full text-sm text-gray-700 placeholder-gray-400 bg-transparent border-none focus:outline-none focus:ring-0"
+                                    autoComplete="off"
+                                />
+                                {query && (
+                                    <button
+                                        type="button"
+                                        onClick={() => { setQuery(''); setOpen(false); }}
+                                        className="text-gray-300 hover:text-gray-500 flex-shrink-0"
+                                    >
+                                        <XCircleIcon className="w-4 h-4" />
+                                    </button>
+                                )}
+                            </div>
+                            <button
+                                type="submit"
+                                className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-500 rounded-xl hover:opacity-90 transition-opacity shadow-md shadow-blue-300 whitespace-nowrap"
+                            >
+                                Book Now
+                                <ArrowRightIcon className="w-4 h-4" />
+                            </button>
+                        </form>
+
+                        {/* Dropdown */}
+                        {open && (searching || hasResults) && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                                {searching && (
+                                    <div className="flex items-center gap-2 px-4 py-3 text-sm text-gray-400">
+                                        <span className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                                        Searching…
+                                    </div>
+                                )}
+
+                                {!searching && results.services.length > 0 && (
+                                    <>
+                                        <p className="px-4 pt-3 pb-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Services</p>
+                                        {results.services.map((svc) => {
+                                            const { emoji } = getServiceIcon(svc.category);
+                                            return (
+                                                <button
+                                                    key={svc.id}
+                                                    type="button"
+                                                    onClick={() => selectService(svc)}
+                                                    className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors"
+                                                >
+                                                    <span className="text-xl w-8 text-center">{emoji}</span>
+                                                    <div>
+                                                        <p className="text-sm font-semibold text-gray-800">{svc.name}</p>
+                                                        <p className="text-xs text-gray-400">{svc.category}</p>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </>
+                                )}
+
+                                {!searching && results.doctors.length > 0 && (
+                                    <>
+                                        <p className="px-4 pt-3 pb-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Doctors</p>
+                                        {results.doctors.map((doc) => (
+                                            <button
+                                                key={doc.id}
+                                                type="button"
+                                                onClick={() => selectDoctor(doc)}
+                                                className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-blue-50 text-left transition-colors"
+                                            >
+                                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-600 flex-shrink-0">
+                                                    {doc.name?.[0] ?? '?'}
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-semibold text-gray-800">{doc.name}</p>
+                                                    <p className="text-xs text-gray-400">{doc.specialty}</p>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </>
+                                )}
+
+                                {!searching && !hasResults && (
+                                    <div className="px-4 py-4 text-sm text-gray-400 text-center">
+                                        No results for "{query}"
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Trust Badges */}

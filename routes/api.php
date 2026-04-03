@@ -17,7 +17,13 @@ Route::middleware('web')->group(function () {
     Route::post('/auth/register', [AuthApiController::class, 'register']);
     Route::post('/auth/logout', [AuthApiController::class, 'logout'])->middleware('auth');
 
-    // Dashboard
+    // Public endpoints: allow listing and viewing doctors/services without authentication
+    Route::get('/doctors',        [DoctorController::class, 'index']);
+    Route::get('/doctors/{id}',   [DoctorController::class, 'show']);
+    Route::get('/services',       [ServiceController::class, 'index']);
+    Route::get('/services/{id}',  [ServiceController::class, 'show']);
+
+    // Dashboard and protected routes
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard/summary', [DashboardController::class, 'summary']);
         Route::get('/availability',                [AppointmentController::class, 'availability']);
@@ -29,12 +35,12 @@ Route::middleware('web')->group(function () {
         Route::patch('/appointments/{id}/cancel',[AppointmentController::class, 'cancel']);
         Route::delete('/appointments/{id}',      [AppointmentController::class, 'destroy']);
 
-        // Doctors
-        Route::get('/doctors',        [DoctorController::class, 'index']);
-        Route::post('/doctors',       [DoctorController::class, 'store']);
-        Route::get('/doctors/{id}',   [DoctorController::class, 'show']);
-        Route::put('/doctors/{id}',   [DoctorController::class, 'update']);
-        Route::delete('/doctors/{id}',[DoctorController::class, 'destroy']);
+        // Doctors (create/update/delete remain protected)
+        Route::post('/doctors',           [DoctorController::class, 'store']);
+        Route::put('/doctors/{id}',       [DoctorController::class, 'update']);
+        // POST alias for update — PHP only populates $_FILES on POST requests
+        Route::post('/doctors/{id}/update', [DoctorController::class, 'update']);
+        Route::delete('/doctors/{id}',    [DoctorController::class, 'destroy']);
 
         // Patients
         Route::get('/patients',        [PatientController::class, 'index']);
@@ -55,12 +61,12 @@ Route::middleware('web')->group(function () {
         Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
-        // Services
-        Route::get('/services',         [ServiceController::class, 'index']);
-        Route::post('/services',        [ServiceController::class, 'store']);
-        Route::get('/services/{id}',    [ServiceController::class, 'show']);
-        Route::put('/services/{id}',    [ServiceController::class, 'update']);
-        Route::delete('/services/{id}', [ServiceController::class, 'destroy']);
+        // Services (create/update/delete remain protected)
+        Route::post('/services',              [ServiceController::class, 'store']);
+        Route::put('/services/{id}',          [ServiceController::class, 'update']);
+        // POST alias for update — PHP only populates $_FILES on POST requests
+        Route::post('/services/{id}/update',  [ServiceController::class, 'update']);
+        Route::delete('/services/{id}',       [ServiceController::class, 'destroy']);
 
         // User management (super-admin only)
         Route::get('/usermanagement', [UserManagementController::class, 'index']);

@@ -12,7 +12,7 @@ const QUICK_ACTIONS = [
     {
         label: 'Book Appointment',
         icon: PlusCircleIcon,
-        href: '/login?tab=register',
+        href: '/appointments/new',
         color: 'text-blue-600',
         bg: 'bg-blue-50 hover:bg-blue-100',
     },

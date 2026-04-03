@@ -1,10 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../_redux/doctor-slice';
 import { createDoctorThunk, updateDoctorThunk } from '../_redux/doctor-thunk';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const DAY_OPTIONS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+// Convert "10:00:00" / "10:00 AM" / "06:00 PM" → "10:00" / "18:00" for <input type="time">
+function toInputTime(t) {
+    if (!t) return '';
+    // MySQL TIME: "HH:MM:SS" → strip seconds
+    if (/^\d{1,2}:\d{2}:\d{2}$/.test(t)) return t.slice(0, 5);
+    // Already HH:mm
+    if (/^\d{1,2}:\d{2}$/.test(t)) return t;
+    // 12-hour "10:00 AM" / "06:00 PM"
+    const match = t.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return t;
+    let h = parseInt(match[1], 10);
+    const m = match[2];
+    const period = match[3].toUpperCase();
+    if (period === 'AM' && h === 12) h = 0;
+    if (period === 'PM' && h !== 12) h += 12;
+    return `${String(h).padStart(2, '0')}:${m}`;
+}
 
 const SPECIALTIES = [
     'General Practice',
@@ -37,6 +55,9 @@ export default function DoctorModalSection() {
     const isEditing = !!selectedDoctor;
 
     const [form, setForm] = useState(EMPTY_FORM);
+    const [photoFile, setPhotoFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
+    const fileRef = useRef(null);
 
     useEffect(() => {
         if (modalOpen) {
@@ -48,12 +69,14 @@ export default function DoctorModalSection() {
                     phone: selectedDoctor.phone ?? '',
                     bio: selectedDoctor.bio ?? '',
                     status: selectedDoctor.status ?? 'available',
-                    schedule_start: selectedDoctor.schedule_start ?? '',
-                    schedule_end: selectedDoctor.schedule_end ?? '',
+                    schedule_start: toInputTime(selectedDoctor.schedule_start),
+                    schedule_end: toInputTime(selectedDoctor.schedule_end),
                     schedule_days: Array.isArray(selectedDoctor.schedule_days) ? selectedDoctor.schedule_days : [],
                 }
                 : EMPTY_FORM
             );
+            setPhotoFile(null);
+            setPhotoPreview(isEditing ? (selectedDoctor.photo ?? null) : null);
         }
     }, [modalOpen, selectedDoctor]);
 
@@ -70,10 +93,22 @@ export default function DoctorModalSection() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let data = form;
+        if (photoFile) {
+            const fd = new FormData();
+            Object.entries(form).forEach(([k, v]) => {
+                if (Array.isArray(v)) {
+                    v.forEach((item) => fd.append(`${k}[]`, item));
+                } else {
+                    fd.append(k, v ?? '');
+                }
+            });
+            fd.append('photo', photoFile);
+            data = fd;
+        }
         const action = isEditing
-            ? updateDoctorThunk({ id: selectedDoctor.id, data: form })
-            : createDoctorThunk(form);
-
+            ? updateDoctorThunk({ id: selectedDoctor.id, data })
+            : createDoctorThunk(data);
         const result = await dispatch(action);
         if (!result.error) dispatch(closeModal());
     };
@@ -207,6 +242,54 @@ export default function DoctorModalSection() {
                                 onChange={(e) => set('schedule_end', e.target.value)}
                                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition"
                             />
+                        </div>
+                    </div>
+
+                    {/* Photo */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-2">Photo</label>
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0 border border-gray-200">
+                                {photoPreview
+                                    ? <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                                    : <span className="text-2xl">📷</span>
+                                }
+                            </div>
+                            <div className="flex-1">
+                                <input
+                                    ref={fileRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        setPhotoFile(file);
+                                        const reader = new FileReader();
+                                        reader.onload = () => setPhotoPreview(reader.result);
+                                        reader.readAsDataURL(file);
+                                    }}
+                                />
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <button
+                                        type="button"
+                                        onClick={() => fileRef.current?.click()}
+                                        className="px-3 py-1.5 text-xs font-semibold text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition"
+                                    >
+                                        {photoPreview ? 'Change Photo' : 'Upload Photo'}
+                                    </button>
+                                    {photoPreview && (
+                                        <button
+                                            type="button"
+                                            onClick={() => { setPhotoFile(null); setPhotoPreview(null); }}
+                                            className="px-3 py-1.5 text-xs font-semibold text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-100 transition"
+                                        >
+                                            Remove
+                                        </button>
+                                    )}
+                                </div>
+                                <p className="text-xs text-gray-400 mt-1.5">Max 10 MB · JPG, PNG, WebP</p>
+                            </div>
                         </div>
                     </div>
 

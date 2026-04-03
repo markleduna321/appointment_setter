@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
@@ -55,7 +56,13 @@ class ServiceController extends Controller
             'duration'    => 'required|integer|min:1|max:480',
             'price'       => 'required|numeric|min:0',
             'status'      => 'in:active,inactive',
+            'image'       => 'nullable|file|image|max:10240',
         ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('services', 'public');
+            $data['image'] = Storage::url($path);
+        }
 
         $service = Service::create($data);
 
@@ -80,7 +87,16 @@ class ServiceController extends Controller
             'duration'    => 'sometimes|required|integer|min:1|max:480',
             'price'       => 'sometimes|required|numeric|min:0',
             'status'      => 'in:active,inactive',
+            'image'       => 'nullable|file|image|max:10240',
         ]);
+
+        if ($request->hasFile('image')) {
+            if ($service->image && str_starts_with($service->image, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $service->image));
+            }
+            $path = $request->file('image')->store('services', 'public');
+            $data['image'] = Storage::url($path);
+        }
 
         $service->update($data);
 

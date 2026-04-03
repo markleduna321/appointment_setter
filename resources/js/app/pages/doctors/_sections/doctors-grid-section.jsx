@@ -70,9 +70,18 @@ function DoctorCard({ doctor, isAdmin }) {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-4">
             {/* Header row */}
             <div className="flex items-start gap-4">
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${avatarGradient(doctor.name)} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
-                    {initials(doctor.name)}
-                </div>
+                {doctor.photo
+                    ? (
+                        <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-gray-100">
+                            <img src={doctor.photo} alt={doctor.name} className="w-full h-full object-cover" />
+                        </div>
+                    )
+                    : (
+                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${avatarGradient(doctor.name)} flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
+                            {initials(doctor.name)}
+                        </div>
+                    )
+                }
                 <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-900 truncate">Dr. {doctor.name}</p>
                     <p className="text-xs text-blue-600 font-medium mt-0.5 truncate">{doctor.specialty}</p>

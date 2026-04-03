@@ -4,6 +4,7 @@ import {
     ClipboardDocumentCheckIcon,
     CheckBadgeIcon,
 } from '@heroicons/react/24/outline';
+import { Link } from '@inertiajs/react';
 
 const steps = [
     {
@@ -89,13 +90,13 @@ export default function HowItWorksSection() {
 
                 {/* Bottom CTA */}
                 <div className="text-center mt-14">
-                    <a
-                        href="#book"
+                    <Link
+                        href="/appointments/new"
                         className="inline-flex items-center gap-2 px-8 py-4 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl hover:opacity-90 transition-opacity shadow-lg shadow-blue-200"
                     >
                         <CalendarDaysIcon className="w-5 h-5" />
                         Book Your Appointment Now
-                    </a>
+                    </Link>
                 </div>
             </div>
         </section>

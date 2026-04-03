@@ -1,4 +1,5 @@
 import { CalendarDaysIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { Link } from '@inertiajs/react';
 
 export default function CtaSection() {
     return (
@@ -36,13 +37,13 @@ export default function CtaSection() {
 
                         {/* Buttons */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a
-                                href="/login?tab=register"
+                            <Link
+                                href="/appointments/new"
                                 className="flex items-center gap-2 px-8 py-4 text-blue-700 bg-white font-bold text-sm rounded-2xl hover:bg-blue-50 transition-colors shadow-lg w-full sm:w-auto justify-center"
                             >
                                 <CalendarDaysIcon className="w-5 h-5" />
                                 Book an Appointment
-                            </a>
+                            </Link>
                             <a
                                 href="tel:+18005551234"
                                 className="flex items-center gap-2 px-8 py-4 text-white border-2 border-white/60 font-bold text-sm rounded-2xl hover:bg-white/10 transition-colors w-full sm:w-auto justify-center"

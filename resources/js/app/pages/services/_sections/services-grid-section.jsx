@@ -62,9 +62,12 @@ function ServiceCard({ service, isAdmin }) {
         <div className={`bg-white rounded-2xl border shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 ${service.status === 'inactive' ? 'opacity-60 border-gray-200' : 'border-gray-100'}`}>
             {/* Header */}
             <div className="flex items-start gap-4">
-                {/* Emoji icon */}
-                <div className={`w-12 h-12 rounded-2xl ${bg} flex items-center justify-center text-2xl flex-shrink-0`}>
-                    {emoji}
+                {/* Icon / image */}
+                <div className={`w-12 h-12 rounded-2xl overflow-hidden ${service.image ? '' : bg} flex items-center justify-center text-2xl flex-shrink-0`}>
+                    {service.image
+                        ? <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                        : emoji
+                    }
                 </div>
 
                 <div className="flex-1 min-w-0">

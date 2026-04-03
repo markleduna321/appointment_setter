@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Doctor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DoctorController extends Controller
 {
@@ -47,13 +48,18 @@ class DoctorController extends Controller
             'email'          => 'nullable|email|unique:doctors,email',
             'phone'          => 'nullable|string|max:50',
             'bio'            => 'nullable|string|max:2000',
-            'photo'          => 'nullable|string|max:500',
+            'photo'          => 'nullable|file|image|max:10240',
             'status'         => 'sometimes|in:available,unavailable,on_leave',
             'schedule_start' => 'nullable|date_format:H:i',
             'schedule_end'   => 'nullable|date_format:H:i',
             'schedule_days'  => 'nullable|array',
             'schedule_days.*'=> 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('doctors', 'public');
+            $data['photo'] = Storage::url($path);
+        }
 
         $doctor = Doctor::create($data);
 
@@ -84,13 +90,22 @@ class DoctorController extends Controller
             'email'          => 'nullable|email|unique:doctors,email,' . $id,
             'phone'          => 'nullable|string|max:50',
             'bio'            => 'nullable|string|max:2000',
-            'photo'          => 'nullable|string|max:500',
+            'photo'          => 'nullable|file|image|max:10240',
             'status'         => 'sometimes|in:available,unavailable,on_leave',
             'schedule_start' => 'nullable|date_format:H:i',
             'schedule_end'   => 'nullable|date_format:H:i',
             'schedule_days'  => 'nullable|array',
             'schedule_days.*'=> 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun',
         ]);
+
+        if ($request->hasFile('photo')) {
+            // Delete old photo if stored locally
+            if ($doctor->photo && str_starts_with($doctor->photo, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $doctor->photo));
+            }
+            $path = $request->file('photo')->store('doctors', 'public');
+            $data['photo'] = Storage::url($path);
+        }
 
         $doctor->update($data);
 

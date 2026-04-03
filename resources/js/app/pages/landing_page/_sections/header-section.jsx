@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Bars3Icon, XMarkIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
+import { Link } from '@inertiajs/react';
 
 const navLinks = [
     { label: 'Home', href: '#home' },
@@ -57,12 +58,12 @@ export default function HeaderSection() {
                     >
                         Log In
                     </a>
-                    <a
-                        href="/login?tab=register"
+                    <Link
+                        href="/appointments/new"
                         className="px-5 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg hover:opacity-90 transition-opacity shadow-md shadow-blue-200"
                     >
                         Book Appointment
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Mobile Hamburger */}
@@ -91,9 +92,9 @@ export default function HeaderSection() {
                         <a href="/login" className="block text-center py-2.5 text-sm font-semibold text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
                             Log In
                         </a>
-                        <a href="/login?tab=register" className="block text-center py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg">
+                        <Link href="/appointments/new" className="block text-center py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg">
                             Book Appointment
-                        </a>
+                        </Link>
                     </div>
                 </div>
             )}

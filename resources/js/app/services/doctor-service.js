@@ -11,6 +11,11 @@ export async function create_doctor_service(data) {
 }
 
 export async function update_doctor_service(id, data) {
+    if (data instanceof FormData) {
+        // PHP only parses $_FILES on POST; use the POST alias route for file uploads
+        const res = await axios.post(`/api/doctors/${id}/update`, data);
+        return res.data.data;
+    }
     const res = await axios.put(`/api/doctors/${id}`, data);
     return res.data.data;
 }

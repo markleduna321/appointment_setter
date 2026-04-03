@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../_redux/service-slice';
 import { createServiceThunk, updateServiceThunk } from '../_redux/service-thunk';
@@ -21,6 +21,9 @@ export default function ServiceModalSection() {
     const isEditing = !!selectedService;
 
     const [form, setForm] = useState(EMPTY_FORM);
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const fileRef = useRef(null);
 
     useEffect(() => {
         if (modalOpen) {
@@ -35,6 +38,8 @@ export default function ServiceModalSection() {
                 }
                 : EMPTY_FORM
             );
+            setImageFile(null);
+            setImagePreview(isEditing ? (selectedService.image ?? null) : null);
         }
     }, [modalOpen, selectedService]);
 
@@ -44,11 +49,17 @@ export default function ServiceModalSection() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const payload = { ...form, duration: Number(form.duration), price: Number(form.price) };
+        const base = { ...form, duration: Number(form.duration), price: Number(form.price) };
+        let payload = base;
+        if (imageFile) {
+            const fd = new FormData();
+            Object.entries(base).forEach(([k, v]) => fd.append(k, v ?? ''));
+            fd.append('image', imageFile);
+            payload = fd;
+        }
         const action = isEditing
             ? updateServiceThunk({ id: selectedService.id, data: payload })
             : createServiceThunk(payload);
-
         const result = await dispatch(action);
         if (!result.error) dispatch(closeModal());
     };
@@ -170,6 +181,54 @@ export default function ServiceModalSection() {
                                     <span className="text-sm text-gray-700 capitalize">{s}</span>
                                 </label>
                             ))}
+                        </div>
+                    </div>
+
+                    {/* Image */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-2">Service Image</label>
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center flex-shrink-0 border border-gray-200">
+                                {imagePreview
+                                    ? <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                    : <span className="text-2xl">🖼️</span>
+                                }
+                            </div>
+                            <div className="flex-1">
+                                <input
+                                    ref={fileRef}
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        setImageFile(file);
+                                        const reader = new FileReader();
+                                        reader.onload = () => setImagePreview(reader.result);
+                                        reader.readAsDataURL(file);
+                                    }}
+                                />
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <button
+                                        type="button"
+                                        onClick={() => fileRef.current?.click()}
+                                        className="px-3 py-1.5 text-xs font-semibold text-purple-600 border border-purple-200 rounded-lg hover:bg-purple-50 transition"
+                                    >
+                                        {imagePreview ? 'Change Image' : 'Upload Image'}
+                                    </button>
+                                    {imagePreview && (
+                                        <button
+                                            type="button"
+                                            onClick={() => { setImageFile(null); setImagePreview(null); }}
+                                            className="px-3 py-1.5 text-xs font-semibold text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-100 transition"
+                                        >
+                                            Remove
+                                        </button>
+                                    )}
+                                </div>
+                                <p className="text-xs text-gray-400 mt-1.5">Max 10 MB · JPG, PNG, WebP</p>
+                            </div>
                         </div>
                     </div>
 

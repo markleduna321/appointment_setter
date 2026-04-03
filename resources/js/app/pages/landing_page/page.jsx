@@ -1,3 +1,4 @@
+import { Head } from '@inertiajs/react';
 import HeaderSection from './_sections/header-section';
 import HeroSection from './_sections/hero-section';
 import StatsSection from './_sections/stats-section';
@@ -12,6 +13,7 @@ import FooterSection from './_sections/footer-section';
 export default function LandingPage() {
     return (
         <div className="min-h-screen">
+            <Head title="Home" />
             <HeaderSection />
             <HeroSection />
             <StatsSection />

@@ -11,6 +11,7 @@ import {
     ClipboardDocumentListIcon,
     PencilIcon,
     PrinterIcon,
+    CalendarDaysIcon,
 } from '@heroicons/react/24/outline';
 import { closeRecordModal, openRecordModal } from '../_redux/patient-record-slice';
 import { createPatientRecordThunk, updatePatientRecordThunk } from '../_redux/patient-record-thunk';
@@ -342,6 +343,14 @@ const EMPTY_LAB = { test_name: '', result: '', unit: '', reference_range: '', st
 const EMPTY_TEST = { type: '', description: '', findings: '', conducted_at: '' };
 
 function buildInitialForm(record) {
+    const followupDefaults = {
+        followup_enabled: false,
+        followup_date:    '',
+        followup_time:    '',
+        followup_service: '',
+        followup_doctor:  '',
+        followup_notes:   '',
+    };
     if (!record) {
         const now = new Date();
         // format local datetime for input
@@ -362,6 +371,7 @@ function buildInitialForm(record) {
             medications: [],
             lab_results: [],
             test_results: [],
+            ...followupDefaults,
         };
     }
     const dt = record.visited_at
@@ -382,6 +392,7 @@ function buildInitialForm(record) {
         medications:       (record.medications ?? []).map((m) => ({ ...EMPTY_MED, ...m })),
         lab_results:       (record.lab_results ?? []).map((r) => ({ ...EMPTY_LAB, ...r })),
         test_results:      (record.test_results ?? []).map((t) => ({ ...EMPTY_TEST, ...t })),
+        ...followupDefaults,
     };
 }
 
@@ -488,6 +499,13 @@ function RecordForm({ patientId, mode, record, onCancel }) {
                 type: t.type, description: clean(t.description),
                 findings: clean(t.findings), conducted_at: clean(t.conducted_at),
             })),
+            followup: (mode === 'add' && form.followup_enabled && form.followup_date) ? {
+                date:        form.followup_date,
+                time:        clean(form.followup_time) || '09:00',
+                service:     clean(form.followup_service) || 'Follow-up Checkup',
+                doctor_name: clean(form.followup_doctor),
+                notes:       clean(form.followup_notes),
+            } : null,
         };
 
         const action = mode === 'edit'
@@ -638,6 +656,70 @@ function RecordForm({ patientId, mode, record, onCancel }) {
                     </div>
                 )}
             />
+
+            {/* Follow-up Appointment (add mode only) */}
+            {mode === 'add' && (
+                <div className="border border-gray-200 rounded-xl overflow-hidden">
+                    <button
+                        type="button"
+                        onClick={() => set('followup_enabled', !form.followup_enabled)}
+                        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-sm font-semibold text-gray-700"
+                    >
+                        <span className="flex items-center gap-2">
+                            <CalendarDaysIcon className="w-4 h-4 text-indigo-500" />
+                            Schedule Follow-up Appointment
+                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                            form.followup_enabled ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-200 text-gray-500'
+                        }`}>{form.followup_enabled ? 'On' : 'Off'}</span>
+                    </button>
+                    {form.followup_enabled && (
+                        <div className="px-4 py-4 space-y-3 border-t border-gray-100">
+                            <div className="grid grid-cols-2 gap-3">
+                                <FormInput
+                                    label="Follow-up Date"
+                                    type="date"
+                                    value={form.followup_date}
+                                    onChange={(v) => set('followup_date', v)}
+                                    required
+                                />
+                                <FormInput
+                                    label="Time (optional)"
+                                    type="time"
+                                    value={form.followup_time}
+                                    onChange={(v) => set('followup_time', v)}
+                                    placeholder="09:00"
+                                />
+                            </div>
+                            <FormInput
+                                label="Service / Reason"
+                                value={form.followup_service}
+                                onChange={(v) => set('followup_service', v)}
+                                placeholder="Follow-up Checkup"
+                            />
+                            <FormInput
+                                label="Doctor"
+                                value={form.followup_doctor}
+                                onChange={(v) => set('followup_doctor', v)}
+                                placeholder="Doctor's name"
+                            />
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-600 mb-1">Notes</label>
+                                <textarea
+                                    rows={2}
+                                    value={form.followup_notes}
+                                    onChange={(e) => set('followup_notes', e.target.value)}
+                                    placeholder="Additional notes for the follow-up…"
+                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition resize-none"
+                                />
+                            </div>
+                            <p className="text-xs text-gray-400">
+                                A confirmed appointment will be created and the current visit's appointment will be marked as completed.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
 
             {/* Footer */}
             <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">

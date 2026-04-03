@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Appointment;
 use App\Models\PatientRecord;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -124,6 +125,13 @@ class PatientRecordController extends Controller
             'test_results.*.description'    => 'nullable|string|max:255',
             'test_results.*.findings'       => 'nullable|string|max:1000',
             'test_results.*.conducted_at'   => 'nullable|date',
+
+            'followup'                => 'nullable|array',
+            'followup.date'           => 'nullable|date',
+            'followup.time'           => 'nullable|string|max:8',
+            'followup.service'        => 'nullable|string|max:255',
+            'followup.doctor_name'    => 'nullable|string|max:255',
+            'followup.notes'          => 'nullable|string|max:500',
         ]);
 
         $record = DB::transaction(function () use ($data, $patientId, $request) {
@@ -152,6 +160,28 @@ class PatientRecordController extends Controller
             }
             if (! empty($data['test_results'])) {
                 $record->testResults()->createMany($data['test_results']);
+            }
+
+            // Mark any same-day appointment for this patient as completed
+            $visitDate = \Carbon\Carbon::parse($data['visited_at'])->toDateString();
+            Appointment::where('user_id', $patientId)
+                ->whereDate('date', $visitDate)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
+
+            // Create follow-up appointment if requested
+            if (! empty($data['followup']['date'])) {
+                $fu = $data['followup'];
+                Appointment::create([
+                    'user_id'     => $patientId,
+                    'service'     => $fu['service'] ?? 'Follow-up Checkup',
+                    'doctor_name' => $fu['doctor_name'] ?? '',
+                    'date'        => $fu['date'],
+                    'time'        => $fu['time'] ?? '09:00:00',
+                    'notes'       => $fu['notes'] ?? null,
+                    'status'      => 'confirmed',
+                    'updated_by'  => $request->user()->id,
+                ]);
             }
 
             return $record;
@@ -209,7 +239,7 @@ class PatientRecordController extends Controller
             'test_results.*.conducted_at'   => 'nullable|date',
         ]);
 
-        DB::transaction(function () use ($data, $record) {
+        DB::transaction(function () use ($data, $record, $patientId, $request) {
             $record->update(array_filter([
                 'visited_at'        => $data['visited_at'] ?? null,
                 'appointment_id'    => array_key_exists('appointment_id', $data) ? $data['appointment_id'] : $record->appointment_id,
@@ -243,6 +273,13 @@ class PatientRecordController extends Controller
                     $record->testResults()->createMany($data['test_results']);
                 }
             }
+
+            // Mark any same-day appointment for this patient as completed
+            $visitDate = \Carbon\Carbon::parse($data['visited_at'] ?? $record->visited_at)->toDateString();
+            Appointment::where('user_id', $patientId)
+                ->whereDate('date', $visitDate)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->update(['status' => 'completed', 'updated_by' => $request->user()->id]);
         });
 
         $record->load(['doctor:id,name,specialty', 'medications', 'labResults', 'testResults', 'creator:id,name']);

@@ -1,0 +1,1324 @@
+{
+  "_ArrowRightIcon-qGC2wl0S.js": {
+    "file": "assets/ArrowRightIcon-qGC2wl0S.js",
+    "name": "ArrowRightIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_BellIcon-D7KixJqQ.js": {
+    "file": "assets/BellIcon-D7KixJqQ.js",
+    "name": "BellIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_CalendarDaysIcon-BDvgz7YQ.js": {
+    "file": "assets/CalendarDaysIcon-BDvgz7YQ.js",
+    "name": "CalendarDaysIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_CalendarDaysIcon-SlXC55hA.js": {
+    "file": "assets/CalendarDaysIcon-SlXC55hA.js",
+    "name": "CalendarDaysIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_CheckCircleIcon-B59Oe94b.js": {
+    "file": "assets/CheckCircleIcon-B59Oe94b.js",
+    "name": "CheckCircleIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_CheckIcon-BhMsPiQf.js": {
+    "file": "assets/CheckIcon-BhMsPiQf.js",
+    "name": "CheckIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_ClipboardDocumentListIcon-DloCIWiB.js": {
+    "file": "assets/ClipboardDocumentListIcon-DloCIWiB.js",
+    "name": "ClipboardDocumentListIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_ClockIcon-CJHBOWnh.js": {
+    "file": "assets/ClockIcon-CJHBOWnh.js",
+    "name": "ClockIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_ClockIcon-CN9-x6PX.js": {
+    "file": "assets/ClockIcon-CN9-x6PX.js",
+    "name": "ClockIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_DocumentTextIcon-EjQDXzdS.js": {
+    "file": "assets/DocumentTextIcon-EjQDXzdS.js",
+    "name": "DocumentTextIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_EnvelopeIcon-BLtBuimO.js": {
+    "file": "assets/EnvelopeIcon-BLtBuimO.js",
+    "name": "EnvelopeIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_HeartIcon-B1JA5Z4P.js": {
+    "file": "assets/HeartIcon-B1JA5Z4P.js",
+    "name": "HeartIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_LockClosedIcon-CVnlYC__.js": {
+    "file": "assets/LockClosedIcon-CVnlYC__.js",
+    "name": "LockClosedIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_MagnifyingGlassIcon-BBON5Y-p.js": {
+    "file": "assets/MagnifyingGlassIcon-BBON5Y-p.js",
+    "name": "MagnifyingGlassIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_MapPinIcon-DBb2tJrd.js": {
+    "file": "assets/MapPinIcon-DBb2tJrd.js",
+    "name": "MapPinIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_PencilIcon-Cvp0SZCu.js": {
+    "file": "assets/PencilIcon-Cvp0SZCu.js",
+    "name": "PencilIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_PhoneIcon-Bq_cFCNC.js": {
+    "file": "assets/PhoneIcon-Bq_cFCNC.js",
+    "name": "PhoneIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_PlusCircleIcon-CKBG2uqf.js": {
+    "file": "assets/PlusCircleIcon-CKBG2uqf.js",
+    "name": "PlusCircleIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_PlusIcon-Bwei639B.js": {
+    "file": "assets/PlusIcon-Bwei639B.js",
+    "name": "PlusIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_PrimaryButton-vy3-a-y_.js": {
+    "file": "assets/PrimaryButton-vy3-a-y_.js",
+    "name": "PrimaryButton",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_ShieldCheckIcon-DF3JdNYp.js": {
+    "file": "assets/ShieldCheckIcon-DF3JdNYp.js",
+    "name": "ShieldCheckIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_SparklesIcon-yW44H8wS.js": {
+    "file": "assets/SparklesIcon-yW44H8wS.js",
+    "name": "SparklesIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_StarIcon-CK_ZKpQv.js": {
+    "file": "assets/StarIcon-CK_ZKpQv.js",
+    "name": "StarIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_TextInput-BY8Yw4Oc.js": {
+    "file": "assets/TextInput-BY8Yw4Oc.js",
+    "name": "TextInput",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_TrashIcon-B0IgSa7x.js": {
+    "file": "assets/TrashIcon-B0IgSa7x.js",
+    "name": "TrashIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_UserGroupIcon-Bl2TGWsf.js": {
+    "file": "assets/UserGroupIcon-Bl2TGWsf.js",
+    "name": "UserGroupIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_UserIcon-c-0qsD4J.js": {
+    "file": "assets/UserIcon-c-0qsD4J.js",
+    "name": "UserIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_XCircleIcon-BIIXLTJV.js": {
+    "file": "assets/XCircleIcon-BIIXLTJV.js",
+    "name": "XCircleIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_XMarkIcon-DS5j638F.js": {
+    "file": "assets/XMarkIcon-DS5j638F.js",
+    "name": "XMarkIcon",
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "_service-icons-Dw8ngHMI.js": {
+    "file": "assets/service-icons-Dw8ngHMI.js",
+    "name": "service-icons"
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-DdXFYasj.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/app/pages/appointments/_sections/appointment-modal-section.jsx",
+      "resources/js/app/pages/appointments/_sections/appointments-table-section.jsx",
+      "resources/js/app/pages/appointments/_sections/filters-section.jsx",
+      "resources/js/app/pages/appointments/_sections/header-section.jsx",
+      "resources/js/app/pages/appointments/_sections/stats-section.jsx",
+      "resources/js/app/pages/appointments/page.jsx",
+      "resources/js/app/pages/book_now/_sections/confirm-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/datetime-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/doctor-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/header-section.jsx",
+      "resources/js/app/pages/book_now/_sections/service-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/stepper-section.jsx",
+      "resources/js/app/pages/book_now/_sections/success-section.jsx",
+      "resources/js/app/pages/book_now/page.jsx",
+      "resources/js/app/pages/dashboard/_sections/announcements-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/charts-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/dashboard-table-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/header-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-header-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-quick-actions-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-stats-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-upcoming-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/quick-actions-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/stats-section.jsx",
+      "resources/js/app/pages/dashboard/page.jsx",
+      "resources/js/app/pages/doctors/_sections/doctor-modal-section.jsx",
+      "resources/js/app/pages/doctors/_sections/doctors-grid-section.jsx",
+      "resources/js/app/pages/doctors/_sections/filters-section.jsx",
+      "resources/js/app/pages/doctors/_sections/header-section.jsx",
+      "resources/js/app/pages/doctors/_sections/stats-section.jsx",
+      "resources/js/app/pages/doctors/page.jsx",
+      "resources/js/app/pages/landing_page/_sections/cta-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/doctors-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/features-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/footer-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/header-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/hero-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/how-it-works-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/services-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/stats-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/testimonials-section.jsx",
+      "resources/js/app/pages/landing_page/page.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/login/_sections/login-form.jsx",
+      "resources/js/app/pages/login/_sections/register-form.jsx",
+      "resources/js/app/pages/login/page.jsx",
+      "resources/js/app/pages/patient/_sections/filters-section.jsx",
+      "resources/js/app/pages/patient/_sections/header-section.jsx",
+      "resources/js/app/pages/patient/_sections/patient-modal-section.jsx",
+      "resources/js/app/pages/patient/_sections/patients-grid-section.jsx",
+      "resources/js/app/pages/patient/page.jsx",
+      "resources/js/app/pages/profile/_sections/header-section.jsx",
+      "resources/js/app/pages/profile/_sections/profile-delete-section.jsx",
+      "resources/js/app/pages/profile/_sections/profile-info-section.jsx",
+      "resources/js/app/pages/profile/_sections/profile-password-section.jsx",
+      "resources/js/app/pages/profile/page.jsx",
+      "resources/js/app/pages/reports/_sections/charts-section.jsx",
+      "resources/js/app/pages/reports/_sections/filters-section.jsx",
+      "resources/js/app/pages/reports/_sections/header-section.jsx",
+      "resources/js/app/pages/reports/_sections/table-section.jsx",
+      "resources/js/app/pages/reports/page.jsx",
+      "resources/js/app/pages/schedule/_sections/appointment-detail-section.jsx",
+      "resources/js/app/pages/schedule/_sections/header-section.jsx",
+      "resources/js/app/pages/schedule/_sections/weekly-calendar-section.jsx",
+      "resources/js/app/pages/schedule/page.jsx",
+      "resources/js/app/pages/services/_sections/filters-section.jsx",
+      "resources/js/app/pages/services/_sections/header-section.jsx",
+      "resources/js/app/pages/services/_sections/service-modal-section.jsx",
+      "resources/js/app/pages/services/_sections/services-grid-section.jsx",
+      "resources/js/app/pages/services/_sections/stats-section.jsx",
+      "resources/js/app/pages/services/page.jsx",
+      "resources/js/app/pages/user_management/_sections/admins-list-section.jsx",
+      "resources/js/app/pages/user_management/_sections/create-admin-section.jsx",
+      "resources/js/app/pages/user_management/_sections/header-section.jsx",
+      "resources/js/app/pages/user_management/page.jsx"
+    ],
+    "css": [
+      "assets/app-aJTXHT20.css"
+    ]
+  },
+  "resources/js/app/pages/appointments/_sections/appointment-modal-section.jsx": {
+    "file": "assets/appointment-modal-section-hLpdeUuX.js",
+    "name": "appointment-modal-section",
+    "src": "resources/js/app/pages/appointments/_sections/appointment-modal-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/appointments/_sections/appointments-table-section.jsx": {
+    "file": "assets/appointments-table-section-BDln2ihD.js",
+    "name": "appointments-table-section",
+    "src": "resources/js/app/pages/appointments/_sections/appointments-table-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/appointments/_sections/filters-section.jsx": {
+    "file": "assets/filters-section-Benipg4V.js",
+    "name": "filters-section",
+    "src": "resources/js/app/pages/appointments/_sections/filters-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MagnifyingGlassIcon-BBON5Y-p.js"
+    ]
+  },
+  "resources/js/app/pages/appointments/_sections/header-section.jsx": {
+    "file": "assets/header-section-D1yPDPBE.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/appointments/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_PlusIcon-Bwei639B.js"
+    ]
+  },
+  "resources/js/app/pages/appointments/_sections/stats-section.jsx": {
+    "file": "assets/stats-section-DcsXz3gj.js",
+    "name": "stats-section",
+    "src": "resources/js/app/pages/appointments/_sections/stats-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_XCircleIcon-BIIXLTJV.js"
+    ]
+  },
+  "resources/js/app/pages/appointments/page.jsx": {
+    "file": "assets/page-By3b8toV.js",
+    "name": "page",
+    "src": "resources/js/app/pages/appointments/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/appointments/_sections/header-section.jsx",
+      "resources/js/app/pages/appointments/_sections/stats-section.jsx",
+      "resources/js/app/pages/appointments/_sections/filters-section.jsx",
+      "resources/js/app/pages/appointments/_sections/appointments-table-section.jsx",
+      "resources/js/app/pages/appointments/_sections/appointment-modal-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_PlusIcon-Bwei639B.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_XCircleIcon-BIIXLTJV.js",
+      "_MagnifyingGlassIcon-BBON5Y-p.js"
+    ]
+  },
+  "resources/js/app/pages/book_now/_sections/confirm-step-section.jsx": {
+    "file": "assets/confirm-step-section-DZrNgOKA.js",
+    "name": "confirm-step-section",
+    "src": "resources/js/app/pages/book_now/_sections/confirm-step-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js"
+    ]
+  },
+  "resources/js/app/pages/book_now/_sections/datetime-step-section.jsx": {
+    "file": "assets/datetime-step-section-CDBcVmXf.js",
+    "name": "datetime-step-section",
+    "src": "resources/js/app/pages/book_now/_sections/datetime-step-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/book_now/_sections/doctor-step-section.jsx": {
+    "file": "assets/doctor-step-section-DfyQEy15.js",
+    "name": "doctor-step-section",
+    "src": "resources/js/app/pages/book_now/_sections/doctor-step-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/book_now/_sections/header-section.jsx": {
+    "file": "assets/header-section-CUdYudeW.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/book_now/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/book_now/_sections/service-step-section.jsx": {
+    "file": "assets/service-step-section-CFWMClPa.js",
+    "name": "service-step-section",
+    "src": "resources/js/app/pages/book_now/_sections/service-step-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_service-icons-Dw8ngHMI.js"
+    ]
+  },
+  "resources/js/app/pages/book_now/_sections/stepper-section.jsx": {
+    "file": "assets/stepper-section-B4NEq-hn.js",
+    "name": "stepper-section",
+    "src": "resources/js/app/pages/book_now/_sections/stepper-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/book_now/_sections/success-section.jsx": {
+    "file": "assets/success-section-DC0PDJu1.js",
+    "name": "success-section",
+    "src": "resources/js/app/pages/book_now/_sections/success-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/book_now/page.jsx": {
+    "file": "assets/page-DdHroVWT.js",
+    "name": "page",
+    "src": "resources/js/app/pages/book_now/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/book_now/_sections/header-section.jsx",
+      "resources/js/app/pages/book_now/_sections/stepper-section.jsx",
+      "resources/js/app/pages/book_now/_sections/service-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/doctor-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/datetime-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/confirm-step-section.jsx",
+      "resources/js/app/pages/book_now/_sections/success-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_service-icons-Dw8ngHMI.js"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/announcements-section.jsx": {
+    "file": "assets/announcements-section-BfinJjj6.js",
+    "name": "announcements-section",
+    "src": "resources/js/app/pages/dashboard/_sections/announcements-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/charts-section.jsx": {
+    "file": "assets/charts-section-rmffbsau.js",
+    "name": "charts-section",
+    "src": "resources/js/app/pages/dashboard/_sections/charts-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/dashboard-table-section.jsx": {
+    "file": "assets/dashboard-table-section-DsN4AChr.js",
+    "name": "dashboard-table-section",
+    "src": "resources/js/app/pages/dashboard/_sections/dashboard-table-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CJHBOWnh.js",
+      "_MapPinIcon-DBb2tJrd.js"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/header-section.jsx": {
+    "file": "assets/header-section-Crs-EsTL.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/dashboard/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/patient-header-section.jsx": {
+    "file": "assets/patient-header-section-EU91HX54.js",
+    "name": "patient-header-section",
+    "src": "resources/js/app/pages/dashboard/_sections/patient-header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/patient-quick-actions-section.jsx": {
+    "file": "assets/patient-quick-actions-section-GUV5o8mw.js",
+    "name": "patient-quick-actions-section",
+    "src": "resources/js/app/pages/dashboard/_sections/patient-quick-actions-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_PlusCircleIcon-CKBG2uqf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_HeartIcon-B1JA5Z4P.js"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/patient-stats-section.jsx": {
+    "file": "assets/patient-stats-section-CAN-5IVr.js",
+    "name": "patient-stats-section",
+    "src": "resources/js/app/pages/dashboard/_sections/patient-stats-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/patient-upcoming-section.jsx": {
+    "file": "assets/patient-upcoming-section-BdW4JCDE.js",
+    "name": "patient-upcoming-section",
+    "src": "resources/js/app/pages/dashboard/_sections/patient-upcoming-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/quick-actions-section.jsx": {
+    "file": "assets/quick-actions-section-DZ-r9R2m.js",
+    "name": "quick-actions-section",
+    "src": "resources/js/app/pages/dashboard/_sections/quick-actions-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_PlusCircleIcon-CKBG2uqf.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_UserIcon-c-0qsD4J.js"
+    ]
+  },
+  "resources/js/app/pages/dashboard/_sections/stats-section.jsx": {
+    "file": "assets/stats-section-D5uI6rjF.js",
+    "name": "stats-section",
+    "src": "resources/js/app/pages/dashboard/_sections/stats-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_BellIcon-D7KixJqQ.js"
+    ]
+  },
+  "resources/js/app/pages/dashboard/page.jsx": {
+    "file": "assets/page-BUO0g3S9.js",
+    "name": "page",
+    "src": "resources/js/app/pages/dashboard/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/dashboard/_sections/header-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/stats-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/charts-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/dashboard-table-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/announcements-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-header-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-stats-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-quick-actions-section.jsx",
+      "resources/js/app/pages/dashboard/_sections/patient-upcoming-section.jsx",
+      "resources/js/app/pages/appointments/_sections/appointment-modal-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_ClockIcon-CJHBOWnh.js",
+      "_MapPinIcon-DBb2tJrd.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_PlusCircleIcon-CKBG2uqf.js"
+    ]
+  },
+  "resources/js/app/pages/doctors/_sections/doctor-modal-section.jsx": {
+    "file": "assets/doctor-modal-section-D6dEDmy1.js",
+    "name": "doctor-modal-section",
+    "src": "resources/js/app/pages/doctors/_sections/doctor-modal-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/doctors/_sections/doctors-grid-section.jsx": {
+    "file": "assets/doctors-grid-section-x8LjpC2w.js",
+    "name": "doctors-grid-section",
+    "src": "resources/js/app/pages/doctors/_sections/doctors-grid-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_PencilIcon-Cvp0SZCu.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_EnvelopeIcon-BLtBuimO.js",
+      "_PhoneIcon-Bq_cFCNC.js"
+    ]
+  },
+  "resources/js/app/pages/doctors/_sections/filters-section.jsx": {
+    "file": "assets/filters-section-COyXS3rZ.js",
+    "name": "filters-section",
+    "src": "resources/js/app/pages/doctors/_sections/filters-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MagnifyingGlassIcon-BBON5Y-p.js",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/doctors/_sections/header-section.jsx": {
+    "file": "assets/header-section-BKuPOP_x.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/doctors/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_PlusIcon-Bwei639B.js"
+    ]
+  },
+  "resources/js/app/pages/doctors/_sections/stats-section.jsx": {
+    "file": "assets/stats-section-Co6eDQBx.js",
+    "name": "stats-section",
+    "src": "resources/js/app/pages/doctors/_sections/stats-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_XCircleIcon-BIIXLTJV.js"
+    ]
+  },
+  "resources/js/app/pages/doctors/page.jsx": {
+    "file": "assets/page-D6o-nj5R.js",
+    "name": "page",
+    "src": "resources/js/app/pages/doctors/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/doctors/_sections/header-section.jsx",
+      "resources/js/app/pages/doctors/_sections/stats-section.jsx",
+      "resources/js/app/pages/doctors/_sections/filters-section.jsx",
+      "resources/js/app/pages/doctors/_sections/doctors-grid-section.jsx",
+      "resources/js/app/pages/doctors/_sections/doctor-modal-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_PlusIcon-Bwei639B.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_XCircleIcon-BIIXLTJV.js",
+      "_MagnifyingGlassIcon-BBON5Y-p.js",
+      "_PencilIcon-Cvp0SZCu.js",
+      "_EnvelopeIcon-BLtBuimO.js",
+      "_PhoneIcon-Bq_cFCNC.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/cta-section.jsx": {
+    "file": "assets/cta-section-C8nuEtWT.js",
+    "name": "cta-section",
+    "src": "resources/js/app/pages/landing_page/_sections/cta-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_PhoneIcon-Bq_cFCNC.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/doctors-section.jsx": {
+    "file": "assets/doctors-section-CIsyAk1N.js",
+    "name": "doctors-section",
+    "src": "resources/js/app/pages/landing_page/_sections/doctors-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_StarIcon-CK_ZKpQv.js",
+      "_MapPinIcon-DBb2tJrd.js",
+      "_CalendarDaysIcon-BDvgz7YQ.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/features-section.jsx": {
+    "file": "assets/features-section-v8WtRSDT.js",
+    "name": "features-section",
+    "src": "resources/js/app/pages/landing_page/_sections/features-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_DocumentTextIcon-EjQDXzdS.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/footer-section.jsx": {
+    "file": "assets/footer-section-Dqm5n6nx.js",
+    "name": "footer-section",
+    "src": "resources/js/app/pages/landing_page/_sections/footer-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_MapPinIcon-DBb2tJrd.js",
+      "_PhoneIcon-Bq_cFCNC.js",
+      "_EnvelopeIcon-BLtBuimO.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/header-section.jsx": {
+    "file": "assets/header-section-Dn7yrOng.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/landing_page/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/hero-section.jsx": {
+    "file": "assets/hero-section-BLTAfXa_.js",
+    "name": "hero-section",
+    "src": "resources/js/app/pages/landing_page/_sections/hero-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-BDvgz7YQ.js",
+      "_ArrowRightIcon-qGC2wl0S.js",
+      "_StarIcon-CK_ZKpQv.js",
+      "_ShieldCheckIcon-DF3JdNYp.js",
+      "_ClockIcon-CJHBOWnh.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/how-it-works-section.jsx": {
+    "file": "assets/how-it-works-section-tegHSYGJ.js",
+    "name": "how-it-works-section",
+    "src": "resources/js/app/pages/landing_page/_sections/how-it-works-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/services-section.jsx": {
+    "file": "assets/services-section-DlnLHweC.js",
+    "name": "services-section",
+    "src": "resources/js/app/pages/landing_page/_sections/services-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_ArrowRightIcon-qGC2wl0S.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/stats-section.jsx": {
+    "file": "assets/stats-section-DBbu_1l1.js",
+    "name": "stats-section",
+    "src": "resources/js/app/pages/landing_page/_sections/stats-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/_sections/testimonials-section.jsx": {
+    "file": "assets/testimonials-section-D5LBfwXX.js",
+    "name": "testimonials-section",
+    "src": "resources/js/app/pages/landing_page/_sections/testimonials-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_StarIcon-CK_ZKpQv.js"
+    ]
+  },
+  "resources/js/app/pages/landing_page/page.jsx": {
+    "file": "assets/page-DdGx8WBW.js",
+    "name": "page",
+    "src": "resources/js/app/pages/landing_page/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/landing_page/_sections/header-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/hero-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/stats-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/services-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/how-it-works-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/features-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/doctors-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/testimonials-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/cta-section.jsx",
+      "resources/js/app/pages/landing_page/_sections/footer-section.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_CalendarDaysIcon-BDvgz7YQ.js",
+      "_ArrowRightIcon-qGC2wl0S.js",
+      "_StarIcon-CK_ZKpQv.js",
+      "_ShieldCheckIcon-DF3JdNYp.js",
+      "_ClockIcon-CJHBOWnh.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_DocumentTextIcon-EjQDXzdS.js",
+      "_MapPinIcon-DBb2tJrd.js",
+      "_PhoneIcon-Bq_cFCNC.js",
+      "_EnvelopeIcon-BLtBuimO.js"
+    ]
+  },
+  "resources/js/app/pages/layout.jsx": {
+    "file": "assets/layout-D1HAM3AW.js",
+    "name": "layout",
+    "src": "resources/js/app/pages/layout.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js"
+    ]
+  },
+  "resources/js/app/pages/login/_sections/login-form.jsx": {
+    "file": "assets/login-form-CDR_64o3.js",
+    "name": "login-form",
+    "src": "resources/js/app/pages/login/_sections/login-form.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_EnvelopeIcon-BLtBuimO.js",
+      "_LockClosedIcon-CVnlYC__.js",
+      "_ArrowRightIcon-qGC2wl0S.js"
+    ]
+  },
+  "resources/js/app/pages/login/_sections/register-form.jsx": {
+    "file": "assets/register-form-tLb6pCJe.js",
+    "name": "register-form",
+    "src": "resources/js/app/pages/login/_sections/register-form.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UserIcon-c-0qsD4J.js",
+      "_EnvelopeIcon-BLtBuimO.js",
+      "_LockClosedIcon-CVnlYC__.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_ArrowRightIcon-qGC2wl0S.js"
+    ]
+  },
+  "resources/js/app/pages/login/page.jsx": {
+    "file": "assets/page-Big7eKV1.js",
+    "name": "page",
+    "src": "resources/js/app/pages/login/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/login/_sections/login-form.jsx",
+      "resources/js/app/pages/login/_sections/register-form.jsx",
+      "_CalendarDaysIcon-BDvgz7YQ.js",
+      "_ShieldCheckIcon-DF3JdNYp.js",
+      "_StarIcon-CK_ZKpQv.js",
+      "_ClockIcon-CJHBOWnh.js",
+      "_EnvelopeIcon-BLtBuimO.js",
+      "_LockClosedIcon-CVnlYC__.js",
+      "_ArrowRightIcon-qGC2wl0S.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_CheckIcon-BhMsPiQf.js"
+    ]
+  },
+  "resources/js/app/pages/patient/_sections/filters-section.jsx": {
+    "file": "assets/filters-section-BlStBy7L.js",
+    "name": "filters-section",
+    "src": "resources/js/app/pages/patient/_sections/filters-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MagnifyingGlassIcon-BBON5Y-p.js",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/patient/_sections/header-section.jsx": {
+    "file": "assets/header-section-g2tzUtG-.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/patient/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_PlusIcon-Bwei639B.js"
+    ]
+  },
+  "resources/js/app/pages/patient/_sections/patient-modal-section.jsx": {
+    "file": "assets/patient-modal-section-CboSDy0K.js",
+    "name": "patient-modal-section",
+    "src": "resources/js/app/pages/patient/_sections/patient-modal-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/patient/_sections/patients-grid-section.jsx": {
+    "file": "assets/patients-grid-section-CBN5m8dD.js",
+    "name": "patients-grid-section",
+    "src": "resources/js/app/pages/patient/_sections/patients-grid-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_PencilIcon-Cvp0SZCu.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_EnvelopeIcon-BLtBuimO.js",
+      "_PhoneIcon-Bq_cFCNC.js"
+    ]
+  },
+  "resources/js/app/pages/patient/page.jsx": {
+    "file": "assets/page-CdLA9RiK.js",
+    "name": "page",
+    "src": "resources/js/app/pages/patient/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/patient/_sections/header-section.jsx",
+      "resources/js/app/pages/patient/_sections/filters-section.jsx",
+      "resources/js/app/pages/patient/_sections/patients-grid-section.jsx",
+      "resources/js/app/pages/patient/_sections/patient-modal-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_PlusIcon-Bwei639B.js",
+      "_MagnifyingGlassIcon-BBON5Y-p.js",
+      "_PencilIcon-Cvp0SZCu.js",
+      "_EnvelopeIcon-BLtBuimO.js",
+      "_PhoneIcon-Bq_cFCNC.js"
+    ]
+  },
+  "resources/js/app/pages/profile/_sections/header-section.jsx": {
+    "file": "assets/header-section-VfMMCirK.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/profile/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_UserIcon-c-0qsD4J.js"
+    ]
+  },
+  "resources/js/app/pages/profile/_sections/profile-delete-section.jsx": {
+    "file": "assets/profile-delete-section-D_uGxw44.js",
+    "name": "profile-delete-section",
+    "src": "resources/js/app/pages/profile/_sections/profile-delete-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-BY8Yw4Oc.js"
+    ]
+  },
+  "resources/js/app/pages/profile/_sections/profile-info-section.jsx": {
+    "file": "assets/profile-info-section-C0VKU1mh.js",
+    "name": "profile-info-section",
+    "src": "resources/js/app/pages/profile/_sections/profile-info-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-BY8Yw4Oc.js",
+      "_PrimaryButton-vy3-a-y_.js"
+    ]
+  },
+  "resources/js/app/pages/profile/_sections/profile-password-section.jsx": {
+    "file": "assets/profile-password-section-DYGwkJA4.js",
+    "name": "profile-password-section",
+    "src": "resources/js/app/pages/profile/_sections/profile-password-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_TextInput-BY8Yw4Oc.js",
+      "_PrimaryButton-vy3-a-y_.js"
+    ]
+  },
+  "resources/js/app/pages/profile/page.jsx": {
+    "file": "assets/page-DF_YwfdH.js",
+    "name": "page",
+    "src": "resources/js/app/pages/profile/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/profile/_sections/header-section.jsx",
+      "resources/js/app/pages/profile/_sections/profile-info-section.jsx",
+      "resources/js/app/pages/profile/_sections/profile-password-section.jsx",
+      "resources/js/app/pages/profile/_sections/profile-delete-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_TextInput-BY8Yw4Oc.js",
+      "_PrimaryButton-vy3-a-y_.js"
+    ]
+  },
+  "resources/js/app/pages/reports/_sections/charts-section.jsx": {
+    "file": "assets/charts-section-Bn0vI2V9.js",
+    "name": "charts-section",
+    "src": "resources/js/app/pages/reports/_sections/charts-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/reports/_sections/filters-section.jsx": {
+    "file": "assets/filters-section-DWI-etZN.js",
+    "name": "filters-section",
+    "src": "resources/js/app/pages/reports/_sections/filters-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/reports/_sections/header-section.jsx": {
+    "file": "assets/header-section-BmeA_AP7.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/reports/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/reports/_sections/table-section.jsx": {
+    "file": "assets/table-section-Cw9JIiVs.js",
+    "name": "table-section",
+    "src": "resources/js/app/pages/reports/_sections/table-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/reports/page.jsx": {
+    "file": "assets/page-CH3L9IXw.js",
+    "name": "page",
+    "src": "resources/js/app/pages/reports/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/reports/_sections/header-section.jsx",
+      "resources/js/app/pages/reports/_sections/filters-section.jsx",
+      "resources/js/app/pages/reports/_sections/charts-section.jsx",
+      "resources/js/app/pages/reports/_sections/table-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js"
+    ]
+  },
+  "resources/js/app/pages/schedule/_sections/appointment-detail-section.jsx": {
+    "file": "assets/appointment-detail-section-WMP8nnJG.js",
+    "name": "appointment-detail-section",
+    "src": "resources/js/app/pages/schedule/_sections/appointment-detail-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/schedule/_sections/header-section.jsx",
+      "_XMarkIcon-DS5j638F.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_DocumentTextIcon-EjQDXzdS.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_XCircleIcon-BIIXLTJV.js"
+    ]
+  },
+  "resources/js/app/pages/schedule/_sections/header-section.jsx": {
+    "file": "assets/header-section-DjvvmEFP.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/schedule/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_CalendarDaysIcon-SlXC55hA.js"
+    ]
+  },
+  "resources/js/app/pages/schedule/_sections/weekly-calendar-section.jsx": {
+    "file": "assets/weekly-calendar-section-LkAeIJMo.js",
+    "name": "weekly-calendar-section",
+    "src": "resources/js/app/pages/schedule/_sections/weekly-calendar-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/schedule/page.jsx": {
+    "file": "assets/page-BVR-vmv0.js",
+    "name": "page",
+    "src": "resources/js/app/pages/schedule/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/schedule/_sections/header-section.jsx",
+      "resources/js/app/pages/schedule/_sections/weekly-calendar-section.jsx",
+      "resources/js/app/pages/schedule/_sections/appointment-detail-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_DocumentTextIcon-EjQDXzdS.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_XCircleIcon-BIIXLTJV.js"
+    ]
+  },
+  "resources/js/app/pages/services/_sections/filters-section.jsx": {
+    "file": "assets/filters-section-BNFHqYSx.js",
+    "name": "filters-section",
+    "src": "resources/js/app/pages/services/_sections/filters-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_MagnifyingGlassIcon-BBON5Y-p.js",
+      "_XMarkIcon-DS5j638F.js"
+    ]
+  },
+  "resources/js/app/pages/services/_sections/header-section.jsx": {
+    "file": "assets/header-section-BESw9_Mk.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/services/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_SparklesIcon-yW44H8wS.js",
+      "_PlusIcon-Bwei639B.js"
+    ]
+  },
+  "resources/js/app/pages/services/_sections/service-modal-section.jsx": {
+    "file": "assets/service-modal-section-BcFH9v7A.js",
+    "name": "service-modal-section",
+    "src": "resources/js/app/pages/services/_sections/service-modal-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/services/_sections/filters-section.jsx",
+      "_service-icons-Dw8ngHMI.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_MagnifyingGlassIcon-BBON5Y-p.js"
+    ]
+  },
+  "resources/js/app/pages/services/_sections/services-grid-section.jsx": {
+    "file": "assets/services-grid-section-Cw3Cg1Pr.js",
+    "name": "services-grid-section",
+    "src": "resources/js/app/pages/services/_sections/services-grid-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_service-icons-Dw8ngHMI.js",
+      "_PencilIcon-Cvp0SZCu.js",
+      "_TrashIcon-B0IgSa7x.js"
+    ]
+  },
+  "resources/js/app/pages/services/_sections/stats-section.jsx": {
+    "file": "assets/stats-section-DJ1--LX0.js",
+    "name": "stats-section",
+    "src": "resources/js/app/pages/services/_sections/stats-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_SparklesIcon-yW44H8wS.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_XCircleIcon-BIIXLTJV.js"
+    ]
+  },
+  "resources/js/app/pages/services/page.jsx": {
+    "file": "assets/page-B3sebWlj.js",
+    "name": "page",
+    "src": "resources/js/app/pages/services/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/services/_sections/header-section.jsx",
+      "resources/js/app/pages/services/_sections/stats-section.jsx",
+      "resources/js/app/pages/services/_sections/filters-section.jsx",
+      "resources/js/app/pages/services/_sections/services-grid-section.jsx",
+      "resources/js/app/pages/services/_sections/service-modal-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js",
+      "_SparklesIcon-yW44H8wS.js",
+      "_PlusIcon-Bwei639B.js",
+      "_CheckCircleIcon-B59Oe94b.js",
+      "_XCircleIcon-BIIXLTJV.js",
+      "_MagnifyingGlassIcon-BBON5Y-p.js",
+      "_service-icons-Dw8ngHMI.js",
+      "_PencilIcon-Cvp0SZCu.js"
+    ]
+  },
+  "resources/js/app/pages/user_management/_sections/admins-list-section.jsx": {
+    "file": "assets/admins-list-section-VsZBnUBt.js",
+    "name": "admins-list-section",
+    "src": "resources/js/app/pages/user_management/_sections/admins-list-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/user_management/_sections/create-admin-section.jsx": {
+    "file": "assets/create-admin-section-DT6BxhMJ.js",
+    "name": "create-admin-section",
+    "src": "resources/js/app/pages/user_management/_sections/create-admin-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/user_management/_sections/header-section.jsx": {
+    "file": "assets/header-section-BCASQkFa.js",
+    "name": "header-section",
+    "src": "resources/js/app/pages/user_management/_sections/header-section.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/app/pages/user_management/page.jsx": {
+    "file": "assets/page-C1Y1cXt3.js",
+    "name": "page",
+    "src": "resources/js/app/pages/user_management/page.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "resources/js/app/pages/layout.jsx",
+      "resources/js/app/pages/user_management/_sections/header-section.jsx",
+      "resources/js/app/pages/user_management/_sections/create-admin-section.jsx",
+      "resources/js/app/pages/user_management/_sections/admins-list-section.jsx",
+      "_BellIcon-D7KixJqQ.js",
+      "_CheckIcon-BhMsPiQf.js",
+      "_XMarkIcon-DS5j638F.js",
+      "_TrashIcon-B0IgSa7x.js",
+      "_UserGroupIcon-Bl2TGWsf.js",
+      "_CalendarDaysIcon-SlXC55hA.js",
+      "_ClockIcon-CN9-x6PX.js",
+      "_HeartIcon-B1JA5Z4P.js",
+      "_ClipboardDocumentListIcon-DloCIWiB.js",
+      "_UserIcon-c-0qsD4J.js"
+    ]
+  }
+}

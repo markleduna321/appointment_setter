@@ -22,7 +22,13 @@ class NotificationService
             'is_read'        => false,
         ]);
 
-        broadcast(new AppointmentNotificationSent($notification));
+        // Broadcast is best-effort — a Pusher failure must never 500 the HTTP request.
+        // The notification is already persisted and will be visible on the next poll.
+        try {
+            broadcast(new AppointmentNotificationSent($notification));
+        } catch (\Throwable $e) {
+            logger()->warning('Broadcast failed for notification #' . $notification->id . ': ' . $e->getMessage());
+        }
     }
 
     /**
